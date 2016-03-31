@@ -1,0 +1,63 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sr5guns.GunFiringFragment">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btn_ss"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_columnSpan="2"
+            android:layout_width="match_parent"
+            android:text="@string/single_shot" />
+
+        <Button
+            android:id="@+id/btn_sa"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:text="@string/semi_auto"/>
+
+        <Button
+            android:id="@+id/btn_sab"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:text="@string/semi_auto_burst"/>
+
+        <Button
+            android:id="@+id/btn_bf"
+            android:layout_row="2"
+            android:layout_column="0"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:text="@string/burst_fire"/>
+
+        <Button
+            android:id="@+id/btn_lb"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:text="@string/long_burst"/>
+
+        <Button
+            android:id="@+id/btn_fa"
+            android:layout_row="3"
+            android:layout_column="0"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:text="@string/full_auto"/>
+
+        <Button
+            android:id="@+id/btn_sf"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:text="@string/supressive_fire"/>
+
+    </GridLayout>
+
+</FrameLayout>

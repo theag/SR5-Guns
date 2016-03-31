@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">SR5 Guns</string>
+    <string name="name">Name</string>
+    <string name="damage">Damage</string>
+    <string name="accuracy">Accuracy</string>
+    <string name="ap">AP</string>
+    <string name="mode">Mode</string>
+    <string name="recoil">Recoil</string>
+    <string name="ammo">Ammo</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ss">SS</string>
+    <string name="sa">SA</string>
+    <string name="sab">SA(B)</string>
+    <string name="bf">BF</string>
+    <string name="lb">LB</string>
+    <string name="fa">FA</string>
+    <string name="sf">SF</string>
+    <string name="error">Error</string>
+    <string name="error_message">Unknown error!</string>
+    <string name="single_shot">Single Shot</string>
+    <string name="semi_auto">Semi Auto</string>
+    <string name="semi_auto_burst">Semi Auto Burst</string>
+    <string name="burst_fire">Burst Fire</string>
+    <string name="long_burst">Long Burst</string>
+    <string name="full_auto">Full Auto</string>
+    <string name="supressive_fire">Suppressive Fire</string>
+    <string name="action_new">New</string>
+    <string name="recoil_comp">Recoil Comp</string>
+</resources>
