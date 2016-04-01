@@ -1,6 +1,5 @@
 package com.sr5guns;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
@@ -9,7 +8,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  */
 public class TabsPagerAdapter extends FragmentStatePagerAdapter {
 
-    private static final String[] tabNames = {"Firing", "Details"};
+    private static final String[] tabNames = {"Firing", "Details", "Clips"};
     private int gunIndex;
 
     public TabsPagerAdapter(FragmentManager fm) {
@@ -29,6 +28,8 @@ public class TabsPagerAdapter extends FragmentStatePagerAdapter {
                 return GunFiringFragment.newInstance(gunIndex);
             case 1:
                 return GunDetailsFragment.newInstance(gunIndex);
+            case 2:
+                return ClipFragment.newInstance(gunIndex);
             default:
                 return null;
         }

@@ -1,0 +1,138 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ClipFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Spinner
+            android:id="@+id/spinner_clips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btn_add_clip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spinner_clips"
+            android:text="@string/add_new"/>
+
+        <Button
+            android:id="@+id/btn_remove_clip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spinner_clips"
+            android:layout_toRightOf="@+id/btn_add_clip"
+            android:text="@string/remove_current"/>
+
+        <TextView
+            android:id="@+id/text_label_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_add_clip"
+            android:layout_marginRight="5dp"
+            android:text="@string/ammo_type"/>
+
+        <TextView
+            android:id="@+id/text_ammo_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_label_1"
+            android:layout_alignBaseline="@+id/btn_change_ammo_type"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black"
+            android:layout_marginRight="5dp"
+            android:text="Regular"/>
+
+        <Button
+            android:id="@+id/btn_change_ammo_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_label_1"
+            android:layout_toRightOf="@+id/text_ammo_type"
+            android:text="@string/change"/>
+
+        <GridLayout
+            android:layout_below="@+id/btn_change_ammo_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/damage_modifier"/>
+
+            <Space
+                android:layout_width="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ap_modifier"/>
+
+            <TextView
+                android:id="@+id/text_damage_mod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="1"
+                android:layout_column="0"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/black"
+                android:text="Dmg Mod"/>
+
+            <TextView
+                android:id="@+id/text_ap_mod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/black"
+                android:text="Ap Mod"/>
+
+            <Space
+                android:layout_height="7dp"
+                android:layout_width="1dp"
+                android:layout_row="2"
+                android:layout_column="0"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="3"
+                android:layout_column="0"
+                android:text="@string/in_clip"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:text="@string/extra"/>
+
+            <TextView
+                android:id="@+id/text_in_clip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="4"
+                android:layout_column="0"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/black"
+                android:text="4/5"/>
+
+            <TextView
+                android:id="@+id/text_extra_ammo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/black"
+                android:text="extra ammo"/>
+
+        </GridLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

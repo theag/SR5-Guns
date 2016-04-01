@@ -5,6 +5,15 @@ package com.sr5guns;
  */
 public class GunAccessory {
 
+    private static GunAccessory add = null;
+
+    public static GunAccessory getAdd() {
+        if(add == null) {
+            add = new GunAccessory(new Template(false, "Add New", "", (byte)0, 0, 0), false);
+        }
+        return add;
+    }
+
     private final Template template;
     public final boolean permanent;
     public boolean using;
@@ -37,6 +46,14 @@ public class GunAccessory {
 
     public String getName() {
         return template.name;
+    }
+
+    public String toString() {
+        String rv = template.name;
+        if(permanent) {
+            rv += " (P)";
+        }
+        return rv;
     }
 
     public static final class Template {

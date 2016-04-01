@@ -14,6 +14,8 @@ public class Gun {
             return "Barrel";
         } else if(mount == 0b001) {
             return "Under-barrel";
+        } else if(mount == 0b1000) {
+            return "Not Mounted";
         } else {
             return "Other";
         }
@@ -22,6 +24,7 @@ public class Gun {
     private final Template template;
     private final GunAccessory[] mountedAccessories;  //top barrel underbarrel
     private final ArrayList<GunAccessory> otherAccessories;
+    public final ArrayList<Clip> clips;
 
     public Gun(Template template) {
         this.template = template;
@@ -31,6 +34,18 @@ public class Gun {
         for(GunAccessory accessory : template.otherAccessories) {
             otherAccessories.add(accessory);
         }
+        clips = new ArrayList<>();
+        Arrays arrays = Arrays.getInstance();
+        Ammo ammo = arrays.getAmmo(template.type, "Regular");
+        if(ammo == null) {
+            ammo = new Ammo(arrays.getAmmoTemplate("Regular"), template.type, template.ammoCount);
+            arrays.ammo.add(ammo);
+        } else {
+            ammo.count += template.ammoCount;
+        }
+        Clip clip = new Clip(template.ammoContainer, template.ammoCount, ammo);
+        clip.reload();
+        clips.add(clip);
     }
 
     @Override
@@ -45,7 +60,7 @@ public class Gun {
     public String getDamageShort() {
         String rv = "" +template.damage +template.damageType.charAt(0);
         if(template.damageSubtype != null) {
-            rv += " (" +template.damageSubtype.charAt(0) +")";
+            rv += "(" +template.damageSubtype.charAt(0) +")";
         }
         return rv;
     }
@@ -341,14 +356,18 @@ public class Gun {
     }
 
     public void addAccessory(byte mount, GunAccessory.Template accessoryTemplate) {
+        GunAccessory ga = null;
+        if(accessoryTemplate != null) {
+            ga = new GunAccessory(accessoryTemplate, false);
+        }
         if(mount == 0b100) {
-            mountedAccessories[0] = new GunAccessory(accessoryTemplate, false);
+            mountedAccessories[0] = ga;
         } else if(mount == 0b010) {
-            mountedAccessories[1] = new GunAccessory(accessoryTemplate, false);
+            mountedAccessories[1] = ga;
         } else if(mount == 0b001) {
-            mountedAccessories[2] = new GunAccessory(accessoryTemplate, false);
-        } else if(mount == 0) {
-            otherAccessories.add(new GunAccessory(accessoryTemplate, false));
+            mountedAccessories[2] = ga;
+        } else if(mount == 0b1000 && ga != null) {
+            otherAccessories.add(ga);
         }
     }
 
@@ -361,6 +380,22 @@ public class Gun {
             return mountedAccessories[2].getName();
         } else {
             return null;
+        }
+    }
+
+    public ArrayList<GunAccessory> getOtherAccessories() {
+        return otherAccessories;
+    }
+
+    public String getOtherMountString(int index) {
+        return otherAccessories.get(index).getName();
+    }
+
+    public void replaceOtherAccessory(int index, GunAccessory.Template accessoryTemplate) {
+        if(accessoryTemplate == null) {
+            otherAccessories.remove(index);
+        } else {
+            otherAccessories.set(index, new GunAccessory(accessoryTemplate, false));
         }
     }
 

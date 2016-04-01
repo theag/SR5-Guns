@@ -1,7 +1,7 @@
 package com.sr5guns;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.net.Uri;
 import android.support.v4.app.DialogFragment;
@@ -15,13 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements GunFiringFragment.OnFragmentInteractionListener,
         GunDetailsFragment.OnFragmentInteractionListener, NewGunDialog.OnClickListener, AdapterView.OnItemSelectedListener,
-        AddAccessoryDialog.OnClickListener, ReplaceAccessoryDialog.OnClickListener {
+        AddAccessoryDialog.OnClickListener, ReplaceAccessoryDialog.OnClickListener, ClipFragment.OnFragmentInteractionListener {
 
     private static final String DIALOG_NEW_GUN_1 = "new gun dialog 1";
     private static final String DIALOG_NEW_GUN_2 = "new gun dialog 2";
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
     public static final String DIALOG_ADD_ACCESSORY = "add accessory dialog";
     private static final String DIALOG_REPLACE_ACCESSORY = "repalce accessory dialog";
     public static final String ARG_MOUNT = "mount";
+    public static final String ARG_OTHER_ACCESSORY_INDEX = "other accessory index";
 
     TabsPagerAdapter tabsPagerAdapter;
     ViewPager viewPager;
@@ -47,11 +49,13 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
         try {
             gunArray.loadAccessoryTemplates(assetManager.open("accessories.txt"));
             gunArray.loadGunTemplates(assetManager.open("guns.txt"));
+            gunArray.loadAmmoTemplates(assetManager.open("ammo.txt"));
         } catch (IOException e) {
             e.printStackTrace(System.out);
         }
-        gunArray.clearGuns();
-        gunArray.addGun(0);
+        if(gunArray.guns.isEmpty()) {
+            gunArray.addGun(0);
+        }
 
         gunSpinner = (Spinner)findViewById(R.id.spinner_guns);
         gunArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, gunArray.guns);
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
         tabsPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager)findViewById(R.id.pager);
         viewPager.setAdapter(tabsPagerAdapter);
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(0);
 
         PagerTabStrip pagerTabStrip = (PagerTabStrip)findViewById(R.id.pagerTabStrip);
         pagerTabStrip.setTabIndicatorColorResource(R.color.colorAccent);
@@ -84,6 +88,10 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
                 NewGunDialog frag = new NewGunDialog();
                 frag.show(getSupportFragmentManager(), DIALOG_NEW_GUN_1);
                 return true;
+            case R.id.action_ammo:
+                Intent intent = new Intent(this, AmmoActivity.class);
+                startActivity(intent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -93,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
     public void onFragmentInteraction(Uri uri) {
         DialogFragment frag;
         Bundle args;
+        Gun gun = (Gun)gunSpinner.getSelectedItem();
         switch(uri.getLastPathSegment()) {
             case DIALOG_TEXT_POPUP:
                 frag = new TextPopupDialog();
@@ -120,7 +129,23 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
                 break;
             case DIALOG_ADD_ACCESSORY:
                 byte mount = Byte.parseByte(uri.getQueryParameter(ARG_MOUNT));
-                if(Arrays.getInstance().guns.get(gunSpinner.getSelectedItemPosition()).canMountOn(mount)) {
+                if(mount == 0b1000) {
+                    int index = Integer.parseInt(uri.getQueryParameter(ARG_OTHER_ACCESSORY_INDEX));
+                    if(index >= 0 && gun.getOtherAccessories().get(index).permanent) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setTitle("Error")
+                                .setMessage("You remove or replace that accessory.");
+                        builder.create().show();
+                    } else {
+                        frag = new AddAccessoryDialog();
+                        args = new Bundle();
+                        args.putByte(AddAccessoryDialog.ARG_MOUNT, mount);
+                        args.putInt(AddAccessoryDialog.ARG_OTHER_INDEX, index);
+                        frag.setArguments(args);
+                        frag.show(getSupportFragmentManager(), DIALOG_ADD_ACCESSORY);
+                    }
+                }
+                else if(gun.canMountOn(mount)) {
                     frag = new AddAccessoryDialog();
                     args = new Bundle();
                     args.putByte(AddAccessoryDialog.ARG_MOUNT, mount);
@@ -144,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
         Arrays arrays = Arrays.getInstance();
         DialogFragment frag;
         Bundle args;
+        Gun gun = (Gun)gunSpinner.getSelectedItem();
         switch(tag) {
             case DIALOG_NEW_GUN_1:
                 frag = new NewGunDialog();
@@ -157,9 +183,25 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
                 gunSpinner.setSelection(index);
                 break;
             case DIALOG_ADD_ACCESSORY:
-                Gun gun = arrays.guns.get(gunSpinner.getSelectedItemPosition());
                 byte mount = data.getByte(AddAccessoryDialog.ARG_MOUNT);
-                if(gun.isMountEmpty(mount)) {
+                if(mount == 0b1000) {
+                    int otherIndex = data.getInt(AddAccessoryDialog.ARG_OTHER_INDEX);
+                    if(otherIndex < 0) {
+                        gun.addAccessory(mount, arrays.getAccessoryTemplate(data.getString(AddAccessoryDialog.ARG_NAME)));
+                        ListView lv = (ListView)findViewById(R.id.other_accessories);
+                        AccessoryAdapter aa = (AccessoryAdapter)lv.getAdapter();
+                        aa.notifyDataSetChanged();
+                    } else {
+                        frag = new ReplaceAccessoryDialog();
+                        args = new Bundle();
+                        args.putByte(ReplaceAccessoryDialog.ARG_MOUNT, mount);
+                        args.putInt(ReplaceAccessoryDialog.ARG_OTHER_INDEX, otherIndex);
+                        args.putString(ReplaceAccessoryDialog.ARG_OLD_NAME, gun.getOtherMountString(otherIndex));
+                        args.putString(ReplaceAccessoryDialog.ARG_NAME, data.getString(AddAccessoryDialog.ARG_NAME));
+                        frag.setArguments(args);
+                        frag.show(getSupportFragmentManager(), DIALOG_REPLACE_ACCESSORY);
+                    }
+                } else if(gun.isMountEmpty(mount)) {
                     gun.addAccessory(mount, arrays.getAccessoryTemplate(data.getString(AddAccessoryDialog.ARG_NAME)));
                     MountedAccessoriesView mav = (MountedAccessoriesView)findViewById(R.id.mounted_accessories);
                     mav.invalidate();
@@ -174,11 +216,17 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
                 }
                 break;
             case DIALOG_REPLACE_ACCESSORY:
-                gun = arrays.guns.get(gunSpinner.getSelectedItemPosition());
                 mount = data.getByte(AddAccessoryDialog.ARG_MOUNT);
-                gun.addAccessory(mount, arrays.getAccessoryTemplate(data.getString(AddAccessoryDialog.ARG_NAME)));
-                MountedAccessoriesView mav = (MountedAccessoriesView)findViewById(R.id.mounted_accessories);
-                mav.invalidate();
+                if(mount == 0b1000) {
+                    gun.replaceOtherAccessory(data.getInt(ReplaceAccessoryDialog.ARG_OTHER_INDEX), arrays.getAccessoryTemplate(data.getString(AddAccessoryDialog.ARG_NAME)));
+                    ListView lv = (ListView)findViewById(R.id.other_accessories);
+                    AccessoryAdapter aa = (AccessoryAdapter)lv.getAdapter();
+                    aa.notifyDataSetChanged();
+                } else {
+                    gun.addAccessory(mount, arrays.getAccessoryTemplate(data.getString(AddAccessoryDialog.ARG_NAME)));
+                    MountedAccessoriesView mav = (MountedAccessoriesView) findViewById(R.id.mounted_accessories);
+                    mav.invalidate();
+                }
                 break;
 
         }

@@ -15,6 +15,7 @@ public class AddAccessoryDialog extends DialogFragment {
 
     public static final String ARG_MOUNT = "mount";
     public static final String ARG_NAME = "name";
+    public static final String ARG_OTHER_INDEX = "other index";
 
     public interface OnClickListener {
         void onDialogClick(String tag, Bundle data);
@@ -23,6 +24,7 @@ public class AddAccessoryDialog extends DialogFragment {
     private OnClickListener listener;
     private String[] items;
     private byte mount;
+    private int otherIndex;
 
     @Override
     public void onAttach(Activity activity) {
@@ -36,6 +38,7 @@ public class AddAccessoryDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         mount = getArguments().getByte(ARG_MOUNT);
+        otherIndex = getArguments().getInt(ARG_OTHER_INDEX, -1);
         items = Arrays.getInstance().getAccessoryTemplateNameArray(mount);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Add " +Gun.getMountName(mount) +" Accessory")
@@ -54,6 +57,9 @@ public class AddAccessoryDialog extends DialogFragment {
             Bundle data = new Bundle();
             data.putByte(ARG_MOUNT, mount);
             data.putString(ARG_NAME, items[which]);
+            if(mount == 0b1000) {
+                data.putInt(ARG_OTHER_INDEX, otherIndex);
+            }
             listener.onDialogClick(getTag(), data);
         }
     }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:text="@string/gun_type"
+        android:layout_gravity="center_vertical"/>
+
+    <Spinner
+        android:id="@+id/spinner_gun_types"/>
+
+    <TextView
+        android:text="@string/ammo_type"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_gravity="center_vertical"/>
+
+    <Spinner
+        android:id="@+id/spinner_ammo_types"/>
+
+</GridLayout>

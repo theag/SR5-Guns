@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 /**
@@ -26,14 +25,19 @@ public class Arrays {
         return instance != null;
     }
 
-    public ArrayList<Gun> guns;
     private ArrayList<Gun.Template> gunTemplates;
     private ArrayList<GunAccessory.Template> accessoryTemplates;
+    private ArrayList<Ammo.Template> ammoTemplates;
+    //TODO: move this to character very eventually
+    public ArrayList<Gun> guns;
+    public ArrayList<Ammo> ammo;
 
     private Arrays() {
         guns = new ArrayList<>();
         gunTemplates = new ArrayList<>();
         accessoryTemplates = new ArrayList<>();
+        ammoTemplates = new ArrayList<>();
+        ammo = new ArrayList<>();
     }
 
     public void loadGunTemplates(InputStream open) throws IOException {
@@ -92,6 +96,21 @@ public class Arrays {
                 template.values[1][i] = Integer.parseInt(tokens.nextToken());
             }
             accessoryTemplates.add(template);
+            line = inFile.readLine();
+        }
+        inFile.close();
+    }
+
+    public void loadAmmoTemplates(InputStream open) throws IOException {
+        ammoTemplates.clear();
+        BufferedReader inFile = new BufferedReader(new InputStreamReader(open));
+        String line = inFile.readLine();
+        StringTokenizer tokens;
+        Ammo.Template template;
+        while(line != null) {
+            tokens = new StringTokenizer(line, "#");
+            template = new Ammo.Template(tokens.nextToken(), Integer.parseInt(tokens.nextToken()), nullConvert(tokens.nextToken()), nullConvert(tokens.nextToken()), Integer.parseInt(tokens.nextToken()));
+            ammoTemplates.add(template);
             line = inFile.readLine();
         }
         inFile.close();
@@ -161,5 +180,37 @@ public class Arrays {
         String[] rv = new String[arr.size()];
         arr.toArray(rv);
         return rv;
+    }
+
+    public Ammo getAmmo(String gunType, String name) {
+        for(Ammo a : ammo) {
+            if(a.gunType.compareTo(gunType) == 0 && a.getName().compareTo(name) == 0) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    public Ammo.Template getAmmoTemplate(String name) {
+        for(Ammo.Template template : ammoTemplates) {
+            if(template.name.compareTo(name) == 0) {
+                return template;
+            }
+        }
+        return null;
+    }
+
+    public boolean canRemoveAmmo(Ammo ammo) {
+        if(ammo.count > 0) {
+            return false;
+        }
+        for(Gun gun : guns) {
+            for(Clip clip : gun.clips) {
+                if(clip.isUsing(ammo)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

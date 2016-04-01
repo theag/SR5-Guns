@@ -28,4 +28,19 @@
     <string name="supressive_fire">Suppressive Fire</string>
     <string name="action_new">New</string>
     <string name="recoil_comp">Recoil Comp</string>
+    <string name="add">Add</string>
+    <string name="remove">Remove</string>
+    <string name="remove_current">Remove Current</string>
+    <string name="add_new">Add New</string>
+    <string name="ammo_type">Ammo Type</string>
+    <string name="change">Change</string>
+    <string name="damage_modifier">Damage Modifier</string>
+    <string name="ap_modifier">AP Modifier</string>
+    <string name="in_clip">In Clip</string>
+    <string name="extra">Extra</string>
+    <string name="add_ammo">Add Ammo</string>
+    <string name="gun_type">Gun Type</string>
+    <string name="save">Save</string>
+    <string name="insert">Insert</string>
+    <string name="cancel">Cancel</string>
 </resources>

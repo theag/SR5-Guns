@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
@@ -22,6 +24,7 @@ public class GunDetailsFragment extends GunFragment implements MountedAccessorie
     private static final String ARG_GUN_INDEX = "gun index";
 
     private int gunIndex;
+    private AccessoryAdapter accessoryAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -82,6 +85,7 @@ public class GunDetailsFragment extends GunFragment implements MountedAccessorie
 
         MountedAccessoriesView mav = (MountedAccessoriesView)view.findViewById(R.id.mounted_accessories);
         mav.setListener(this);
+
         return view;
     }
 
@@ -103,6 +107,31 @@ public class GunDetailsFragment extends GunFragment implements MountedAccessorie
         tv.setText(gun.getAmmoShort());
         MountedAccessoriesView mav = (MountedAccessoriesView)view.findViewById(R.id.mounted_accessories);
         mav.setGunIndex(gunIndex);
+
+        ListView lv = (ListView)view.findViewById(R.id.other_accessories);
+        accessoryAdapter = new AccessoryAdapter(getContext(), gun);
+        lv.setAdapter(accessoryAdapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onOtherAccessoryClick(position);
+            }
+        });
+    }
+
+    private void onOtherAccessoryClick(int position) {
+        Uri.Builder builder = new Uri.Builder();
+        builder.appendPath(MainActivity.DIALOG_ADD_ACCESSORY);
+        if(accessoryAdapter.isAdd(position)) {
+            builder.appendQueryParameter(MainActivity.ARG_MOUNT, "8");
+            builder.appendQueryParameter(MainActivity.ARG_OTHER_ACCESSORY_INDEX, "-1");
+        } else {
+            builder.appendQueryParameter(MainActivity.ARG_MOUNT, "8");
+            builder.appendQueryParameter(MainActivity.ARG_OTHER_ACCESSORY_INDEX, ""+position);
+        }
+        if (mListener != null) {
+            mListener.onFragmentInteraction(builder.build());
+        }
     }
 
     public void setGunIndex(int gunIndex) {
