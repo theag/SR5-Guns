@@ -9,19 +9,22 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 /**
  * Created by nbp184 on 2016/04/01.
  */
-public class AddAmmoDialog extends DialogFragment {
-
-    public static final String ARG_DO_NEXT = "do next";
+public class AddAmmoDialog extends DialogFragment implements AdapterView.OnItemSelectedListener {
 
     public interface OnClickListener {
-        void onDialogClick(String tag, Bundle data);
+        void onAddAmmo(boolean doNext);
     }
 
     private OnClickListener listener;
+    private Spinner gunTypes;
+    private Spinner ammoTypes;
 
     @Override
     public void onAttach(Activity activity) {
@@ -37,7 +40,17 @@ public class AddAmmoDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View inflated = inflater.inflate(R.layout.dialog_add_ammo, null);
-        //TODO: fill in this view
+
+        Arrays arrays = Arrays.getInstance();
+
+        ammoTypes = (Spinner)inflated.findViewById(R.id.spinner_ammo_types);
+
+        gunTypes = (Spinner)inflated.findViewById(R.id.spinner_gun_types);
+        ArrayAdapter<String> guntypeAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, arrays.getGunTypes());
+        guntypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        gunTypes.setAdapter(guntypeAdapter);
+        gunTypes.setOnItemSelectedListener(this);
+
         builder.setTitle("Add Ammo")
                 .setView(inflated)
                 .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
@@ -59,10 +72,23 @@ public class AddAmmoDialog extends DialogFragment {
 
     private void doClick(boolean doNext) {
         if(listener != null) {
-            Bundle data = new Bundle();
-            data.putBoolean(ARG_DO_NEXT, doNext);
-            listener.onDialogClick(getTag(), data);
+            Arrays arrays = Arrays.getInstance();
+            arrays.ammo.add(new Ammo((Ammo.Template)ammoTypes.getSelectedItem(), (String)gunTypes.getSelectedItem(), 0));
+            listener.onAddAmmo(doNext);
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Arrays arrays = Arrays.getInstance();
+        ArrayAdapter<Ammo.Template> ammoTypeAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, arrays.getFreeAmmoTemplates((String)gunTypes.getSelectedItem()));
+        ammoTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ammoTypes.setAdapter(ammoTypeAdapter);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
 }

@@ -25,6 +25,7 @@ public class Gun {
     private final GunAccessory[] mountedAccessories;  //top barrel underbarrel
     private final ArrayList<GunAccessory> otherAccessories;
     public final ArrayList<Clip> clips;
+    private int currentClip;
 
     public Gun(Template template) {
         this.template = template;
@@ -46,6 +47,7 @@ public class Gun {
         Clip clip = new Clip(template.ammoContainer, template.ammoCount, ammo);
         clip.reload();
         clips.add(clip);
+        currentClip = 0;
     }
 
     @Override
@@ -397,6 +399,14 @@ public class Gun {
         } else {
             otherAccessories.set(index, new GunAccessory(accessoryTemplate, false));
         }
+    }
+
+    public String getType() {
+        return template.type;
+    }
+
+    public boolean isCurrent(Clip clip) {
+        return clips.get(currentClip) == clip;
     }
 
     public static final class Template {

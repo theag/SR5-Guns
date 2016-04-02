@@ -41,6 +41,16 @@ public class Ammo {
         return rv;
     }
 
+    public String getAPModShort() {
+        if(template.ap == 0) {
+            return "--";
+        } else if(template.ap > 0) {
+            return "+"+template.ap;
+        } else {
+            return ""+template.ap;
+        }
+    }
+
     public static final class Template {
         public final String name;
         public final int damage;
@@ -54,6 +64,10 @@ public class Ammo {
             this.damageType = damageType;
             this.damageSubType = damageSubType;
             this.ap = ap;
+        }
+
+        public String toString() {
+            return name;
         }
     }
 

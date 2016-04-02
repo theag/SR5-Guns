@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -105,6 +107,16 @@ public class ClipFragment extends GunFragment implements AdapterView.OnItemSelec
             Clip clip = (Clip)clipSpinner.getSelectedItem();
             TextView tv = (TextView)top.findViewById(R.id.text_damage_mod);
             tv.setText(clip.getDamageModShort());
+            tv = (TextView)top.findViewById(R.id.text_ap_mod);
+            tv.setText(clip.getAPMod());
+            tv = (TextView)top.findViewById(R.id.text_in_clip);
+            tv.setText(clip.getAmmoCountString());
+            if(Arrays.getInstance().guns.get(gunIndex).isCurrent(clip)) {
+                RadioButton rb = (RadioButton)top.findViewById(R.id.radio_current);
+                rb.setChecked(true);
+                Button btn = (Button)top.findViewById(R.id.btn_delete);
+                btn.setEnabled(false);
+            }
         }
     }
 

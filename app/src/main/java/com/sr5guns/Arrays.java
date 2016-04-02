@@ -213,4 +213,32 @@ public class Arrays {
         }
         return true;
     }
+
+    public ArrayList<String> getGunTypes() {
+        ArrayList<String> rv = new ArrayList<>();
+        for(Gun gun : guns) {
+            if(!rv.contains(gun.getType())) {
+                rv.add(gun.getType());
+            }
+        }
+        return rv;
+    }
+
+    public ArrayList<Ammo.Template> getFreeAmmoTemplates(String gunType) {
+        ArrayList<Ammo.Template> rv = new ArrayList<>();
+        boolean foundTemplate;
+        for(Ammo.Template template : ammoTemplates) {
+            foundTemplate = false;
+            for(Ammo a : ammo) {
+                if(a.getName().compareTo(template.name) == 0 && a.gunType.compareTo(gunType) == 0) {
+                    foundTemplate = true;
+                    break;
+                }
+            }
+            if(!foundTemplate) {
+                rv.add(template);
+            }
+        }
+        return rv;
+    }
 }

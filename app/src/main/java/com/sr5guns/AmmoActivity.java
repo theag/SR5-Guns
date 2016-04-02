@@ -6,8 +6,9 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class AmmoActivity extends AppCompatActivity {
+public class AmmoActivity extends AppCompatActivity implements AddAmmoDialog.OnClickListener {
 
+    private static final String DIALOG_ADD_AMMO = "add ammo dialog";
     AmmoListAdapter ammoListAdapter;
 
     @Override
@@ -24,6 +25,8 @@ public class AmmoActivity extends AppCompatActivity {
         Arrays arrays = Arrays.getInstance();
         switch(view.getId()) {
             case R.id.btn_add_ammo:
+                AddAmmoDialog frag = new AddAmmoDialog();
+                frag.show(getSupportFragmentManager(), DIALOG_ADD_AMMO);
                 break;
             case R.id.btn_remove:
                 TextView position = (TextView)((View)view.getParent()).findViewById(R.id.text_position);
@@ -38,4 +41,12 @@ public class AmmoActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onAddAmmo(boolean doNext) {
+        ammoListAdapter.notifyDataSetChanged();
+        if(doNext) {
+            AddAmmoDialog frag = new AddAmmoDialog();
+            frag.show(getSupportFragmentManager(), DIALOG_ADD_AMMO);
+        }
+    }
 }

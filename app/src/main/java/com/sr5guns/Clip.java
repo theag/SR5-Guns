@@ -23,7 +23,7 @@ public class Clip {
 
     public boolean reload() {
         int need = size - bulletCount;
-        if(need < ammo.count) {
+        if(need <= ammo.count) {
             bulletCount += need;
             ammo.count -= need;
             return true;
@@ -38,5 +38,13 @@ public class Clip {
 
     public boolean isUsing(Ammo ammo) {
         return this.ammo == ammo;
+    }
+
+    public String getAPMod() {
+        return ammo.getAPModShort();
+    }
+
+    public String getAmmoCountString() {
+        return bulletCount +"/" +size;
     }
 }

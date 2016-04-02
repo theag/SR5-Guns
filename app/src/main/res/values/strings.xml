@@ -43,4 +43,7 @@
     <string name="save">Save</string>
     <string name="insert">Insert</string>
     <string name="cancel">Cancel</string>
+    <string name="reload">Reload</string>
+    <string name="delete">Delete</string>
+    <string name="current">Current</string>
 </resources>
