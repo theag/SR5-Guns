@@ -1,6 +1,7 @@
 package com.sr5guns;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  * Created by nbp184 on 2016/03/30.
@@ -407,6 +408,49 @@ public class Gun {
 
     public boolean isCurrent(Clip clip) {
         return clips.get(currentClip) == clip;
+    }
+
+    public String save() {
+        String rv = template.name;
+        for(GunAccessory accessory : mountedAccessories) {
+            rv += Arrays.recordSep;
+            if(accessory == null) {
+                rv += Arrays.nullChar;
+            } else {
+                rv += accessory.save(Arrays.unitSep);
+            }
+        }
+        for(GunAccessory accessory : otherAccessories) {
+            rv += Arrays.recordSep +accessory.save(Arrays.unitSep);
+        }
+        rv += Arrays.recordSep + Arrays.groupSep;
+        for(Clip clip : clips) {
+            rv += Arrays.recordSep +clip.save(Arrays.unitSep);
+        }
+        return rv;
+    }
+
+    public static Gun load(String input) {
+        StringTokenizer tokens = new StringTokenizer(input, Arrays.recordSep);
+        Gun rv = new Gun(Arrays.getInstance().getGunTemplate(tokens.nextToken()));
+        String line;
+        for(int i = 0; i < rv.mountedAccessories.length; i++) {
+            line = tokens.nextToken();
+            if(line.compareTo(Arrays.nullChar) != 0) {
+                rv.mountedAccessories[i] = GunAccessory.load(line, Arrays.unitSep);
+            }
+        }
+        while(tokens.hasMoreTokens()) {
+            line = tokens.nextToken();
+            if(line.compareTo(Arrays.groupSep) == 0) {
+                break;
+            }
+            rv.otherAccessories.add(GunAccessory.load(line, Arrays.unitSep));
+        }
+        while(tokens.hasMoreTokens()) {
+            rv.clips.add(Clip.load(tokens.nextToken(), Arrays.unitSep, rv.template.type));
+        }
+        return rv;
     }
 
     public static final class Template {

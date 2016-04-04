@@ -1,9 +1,13 @@
 package com.sr5guns;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -13,6 +17,11 @@ import java.util.StringTokenizer;
 public class Arrays {
 
     private static Arrays instance = null;
+    public static String fileSep = ""+((char)28);
+    public static String groupSep = ""+((char)29);
+    public static String nullChar = ""+((char)0);
+    public static String recordSep = ""+((char)30);
+    public static String unitSep = ""+((char)31);
 
     public static Arrays getInstance() {
         if(instance == null) {
@@ -240,5 +249,52 @@ public class Arrays {
             }
         }
         return rv;
+    }
+
+    public void save(File dir) {
+        try {
+            PrintWriter outFile = new PrintWriter(new File(dir, "saveFile.txt"));
+            for(Ammo a : ammo) {
+                outFile.println(a.save());
+            }
+            outFile.println(fileSep);
+            for(Gun gun : guns) {
+                outFile.println(gun.save());
+            }
+            outFile.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace(System.out);
+        }
+    }
+
+    public void load(File dir) {
+        try {
+            BufferedReader inFile = new BufferedReader(new FileReader(new File(dir, "saveFile.txt")));
+            String line = inFile.readLine();
+            while(line != null && line.compareTo(fileSep) != 0) {
+                ammo.add(Ammo.load(line));
+                line = inFile.readLine();
+            }
+            line = inFile.readLine();
+            while(line != null) {
+                guns.add(Gun.load(line));
+                line = inFile.readLine();
+            }
+            inFile.close();
+        } catch (IOException e) {
+            guns.clear();
+            ammo.clear();
+            e.printStackTrace(System.out);
+        }
+
+    }
+
+    public Gun.Template getGunTemplate(String name) {
+        for(Gun.Template template : gunTemplates) {
+            if(template.name.compareTo(name) == 0) {
+                return template;
+            }
+        }
+        return null;
     }
 }

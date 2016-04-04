@@ -1,5 +1,7 @@
 package com.sr5guns;
 
+import java.util.StringTokenizer;
+
 /**
  * Created by nbp184 on 2016/04/01.
  */
@@ -49,6 +51,15 @@ public class Ammo {
         } else {
             return ""+template.ap;
         }
+    }
+
+    public String save() {
+        return template.name +Arrays.unitSep +gunType +Arrays.unitSep +count;
+    }
+
+    public static Ammo load(String input) {
+        StringTokenizer tokens = new StringTokenizer(input, Arrays.unitSep);
+        return new Ammo(Arrays.getInstance().getAmmoTemplate(tokens.nextToken()), tokens.nextToken(), Integer.parseInt(tokens.nextToken()));
     }
 
     public static final class Template {
