@@ -73,7 +73,7 @@ public class AddAmmoDialog extends DialogFragment implements AdapterView.OnItemS
     private void doClick(boolean doNext) {
         if(listener != null) {
             Arrays arrays = Arrays.getInstance();
-            arrays.ammo.add(new Ammo((Ammo.Template)ammoTypes.getSelectedItem(), (String)gunTypes.getSelectedItem(), 0));
+            arrays.ammo.add(new Ammo((Ammo.Template)ammoTypes.getSelectedItem(), (String)gunTypes.getSelectedItem(), 10));
             listener.onAddAmmo(doNext);
         }
     }

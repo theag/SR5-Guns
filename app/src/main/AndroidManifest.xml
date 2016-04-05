@@ -18,9 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AmmoActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/ammo"></activity>
+        <activity
+            android:name=".AmmoActivity"
+            android:label="@string/ammo"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".CharacterActivity"
+            android:label="@string/character"
+            android:parentActivityName=".MainActivity"></activity>
     </application>
 
 </manifest>

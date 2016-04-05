@@ -162,6 +162,9 @@ public class Arrays {
             }
         }
         guns.add(new Gun(selected));
+        if(selected.type.compareTo("Special weapon") == 0 && !Runner.getInstance().hasExoticSkill(selected.name)) {
+            Runner.getInstance().addExoticSkill(selected.name);
+        }
         return guns.size() - 1;
     }
 
@@ -239,6 +242,18 @@ public class Arrays {
                 rv.add(template);
             }
         }
+        return rv;
+    }
+
+    public String[] getAmmoNames(String gunType) {
+        ArrayList<String> arr = new ArrayList<>();
+        for(Ammo a : ammo) {
+            if(a.gunType.compareTo(gunType) == 0) {
+                arr.add(a.getName());
+            }
+        }
+        String[] rv = new String[arr.size()];
+        arr.toArray(rv);
         return rv;
     }
 }

@@ -409,6 +409,18 @@ public class Gun {
         return clips.get(currentClip) == clip;
     }
 
+    public int getAmmoCount() {
+        return template.ammoCount;
+    }
+
+    public void setCurrent(Clip clip) {
+        currentClip = clips.indexOf(clip);
+    }
+
+    public String getClipType() {
+        return template.ammoContainer;
+    }
+
     public static final class Template {
         public final String name;
         public final String type;

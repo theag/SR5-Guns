@@ -21,14 +21,14 @@ public class Clip {
         return ammo.getName() +" (" +type +")";
     }
 
-    public boolean reload() {
+    public void reload() {
         int need = size - bulletCount;
         if(need <= ammo.count) {
             bulletCount += need;
             ammo.count -= need;
-            return true;
         } else {
-            return false;
+            bulletCount += ammo.count;
+            ammo.count = 0;
         }
     }
 
@@ -46,5 +46,30 @@ public class Clip {
 
     public String getAmmoCountString() {
         return bulletCount +"/" +size;
+    }
+
+    public void returnAmmo() {
+        ammo.count += bulletCount;
+        bulletCount = 0;
+    }
+
+    public Ammo getAmmo() {
+        return ammo;
+    }
+
+    public String getAmmoType() {
+        return ammo.getName();
+    }
+
+    public void setAmmo(Ammo ammo) {
+        this.ammo = ammo;
+    }
+
+    public boolean isDamageInteresting() {
+        return ammo.isDamageInteresting();
+    }
+
+    public String getDamageModLong() {
+        return ammo.getDamageModLong();
     }
 }

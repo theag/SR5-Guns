@@ -23,11 +23,12 @@ import android.widget.TextView;
  * Use the {@link ClipFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ClipFragment extends GunFragment implements AdapterView.OnItemSelectedListener {
+public class ClipFragment extends GunFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
     private static final String ARG_GUN_INDEX = "gun index";
 
     private int gunIndex;
     private Spinner clipSpinner;
+    private ArrayAdapter<Clip> clipArrayAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -55,6 +56,25 @@ public class ClipFragment extends GunFragment implements AdapterView.OnItemSelec
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_clip, container, false);
+
+        Button btn = (Button)view.findViewById(R.id.btn_add_clip);
+        btn.setOnClickListener(this);
+
+        btn = (Button)view.findViewById(R.id.btn_delete);
+        btn.setOnClickListener(this);
+
+        btn = (Button)view.findViewById(R.id.btn_change_ammo_type);
+        btn.setOnClickListener(this);
+
+        btn = (Button)view.findViewById(R.id.btn_reload);
+        btn.setOnClickListener(this);
+
+        RadioButton radioButton = (RadioButton)view.findViewById(R.id.radio_current);
+        radioButton.setOnClickListener(this);
+
+        TextView tv = (TextView)view.findViewById(R.id.text_damage_mod);
+        tv.setOnClickListener(this);
+
         if(gunIndex >= 0) {
             updateView(view);
         }
@@ -64,7 +84,7 @@ public class ClipFragment extends GunFragment implements AdapterView.OnItemSelec
     private void updateView(View view) {
         Gun gun = Arrays.getInstance().guns.get(gunIndex);
         clipSpinner = (Spinner)view.findViewById(R.id.spinner_clips);
-        ArrayAdapter<Clip> clipArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, gun.clips);
+        clipArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, gun.clips);
         clipArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         clipSpinner.setAdapter(clipArrayAdapter);
         clipSpinner.setOnItemSelectedListener(this);
@@ -105,7 +125,9 @@ public class ClipFragment extends GunFragment implements AdapterView.OnItemSelec
         View top = getView();
         if(top != null) {
             Clip clip = (Clip)clipSpinner.getSelectedItem();
-            TextView tv = (TextView)top.findViewById(R.id.text_damage_mod);
+            TextView tv = (TextView)top.findViewById(R.id.text_ammo_type);
+            tv.setText(clip.getAmmoType());
+            tv = (TextView)top.findViewById(R.id.text_damage_mod);
             tv.setText(clip.getDamageModShort());
             tv = (TextView)top.findViewById(R.id.text_ap_mod);
             tv.setText(clip.getAPMod());
@@ -116,6 +138,11 @@ public class ClipFragment extends GunFragment implements AdapterView.OnItemSelec
                 rb.setChecked(true);
                 Button btn = (Button)top.findViewById(R.id.btn_delete);
                 btn.setEnabled(false);
+            } else {
+                RadioButton rb = (RadioButton)top.findViewById(R.id.radio_current);
+                rb.setChecked(false);
+                Button btn = (Button)top.findViewById(R.id.btn_delete);
+                btn.setEnabled(true);
             }
         }
     }
@@ -123,6 +150,53 @@ public class ClipFragment extends GunFragment implements AdapterView.OnItemSelec
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        Arrays arrays = Arrays.getInstance();
+        Gun gun = arrays.guns.get(gunIndex);
+        Clip clip = (Clip)clipSpinner.getSelectedItem();
+        Uri.Builder builder;
+        switch(v.getId()) {
+            case R.id.btn_add_clip:
+                gun.clips.add(new Clip(gun.getClipType(), gun.getAmmoCount(), arrays.getAmmo(gun.getType(), "Regular")));
+                clipArrayAdapter.notifyDataSetChanged();
+                clipSpinner.setSelection(gun.clips.size() - 1);
+                break;
+            case R.id.btn_delete:
+                clip.returnAmmo();
+                gun.clips.remove(clip);
+                clipArrayAdapter.notifyDataSetChanged();
+                break;
+            case R.id.btn_change_ammo_type:
+                builder = new Uri.Builder();
+                builder.appendPath(MainActivity.DIALOG_CHANGE_AMMO);
+                builder.appendQueryParameter(MainActivity.ARG_CLIP_INDEX, ""+clipSpinner.getSelectedItemPosition());
+                mListener.onFragmentInteraction(builder.build());
+                break;
+            case R.id.btn_reload:
+                clip.reload();
+                TextView tv = (TextView)getView().findViewById(R.id.text_in_clip);
+                tv.setText(clip.getAmmoCountString());
+                break;
+            case R.id.radio_current:
+                RadioButton rb = (RadioButton)v;
+                if(rb.isChecked()) {
+                    gun.setCurrent(clip);
+                    Button btn = (Button)getView().findViewById(R.id.btn_delete);
+                    btn.setEnabled(false);
+                }
+                break;
+            case R.id.text_damage_mod:
+                if(clip.isDamageInteresting()) {
+                    builder = new Uri.Builder();
+                    builder.appendPath(MainActivity.DIALOG_TEXT_POPUP);
+                    builder.appendQueryParameter(MainActivity.ARG_VIEW_ID, ""+R.id.text_damage_mod);
+                    builder.appendQueryParameter(MainActivity.ARG_CLIP_INDEX, ""+clipSpinner.getSelectedItemPosition());
+                    mListener.onFragmentInteraction(builder.build());
+                }
+        }
     }
 
     /**

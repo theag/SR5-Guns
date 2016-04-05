@@ -17,12 +17,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements GunFiringFragment.OnFragmentInteractionListener,
         GunDetailsFragment.OnFragmentInteractionListener, NewGunDialog.OnClickListener, AdapterView.OnItemSelectedListener,
-        AddAccessoryDialog.OnClickListener, ReplaceAccessoryDialog.OnClickListener, ClipFragment.OnFragmentInteractionListener {
+        AddAccessoryDialog.OnClickListener, ReplaceAccessoryDialog.OnClickListener, ClipFragment.OnFragmentInteractionListener,
+        ChangeAmmoDialog.OnClickListener {
 
     private static final String DIALOG_NEW_GUN_1 = "new gun dialog 1";
     private static final String DIALOG_NEW_GUN_2 = "new gun dialog 2";
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
     private static final String DIALOG_REPLACE_ACCESSORY = "repalce accessory dialog";
     public static final String ARG_MOUNT = "mount";
     public static final String ARG_OTHER_ACCESSORY_INDEX = "other accessory index";
+    public static final String DIALOG_CHANGE_AMMO = "change ammo";
+    public static final String ARG_CLIP_INDEX = "clip index";
 
     TabsPagerAdapter tabsPagerAdapter;
     ViewPager viewPager;
@@ -66,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
         tabsPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager)findViewById(R.id.pager);
         viewPager.setAdapter(tabsPagerAdapter);
-        viewPager.setCurrentItem(0);
+        viewPager.setCurrentItem(2);
 
         PagerTabStrip pagerTabStrip = (PagerTabStrip)findViewById(R.id.pagerTabStrip);
         pagerTabStrip.setTabIndicatorColorResource(R.color.colorAccent);
@@ -82,14 +86,18 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.action_new:
                 NewGunDialog frag = new NewGunDialog();
                 frag.show(getSupportFragmentManager(), DIALOG_NEW_GUN_1);
                 return true;
             case R.id.action_ammo:
-                Intent intent = new Intent(this, AmmoActivity.class);
+                intent = new Intent(this, AmmoActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_character:
+                intent = new Intent(this, CharacterActivity.class);
                 startActivity(intent);
                 return true;
             default:
@@ -109,19 +117,23 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
                 switch(Integer.parseInt(uri.getQueryParameter(ARG_VIEW_ID))) {
                     case R.id.text_damage:
                         args.putInt(TextPopupDialog.ARG_TITLE, R.string.damage);
-                        args.putString(TextPopupDialog.ARG_MESSAGE, Arrays.getInstance().guns.get(gunSpinner.getSelectedItemPosition()).getDamageLong());
+                        args.putString(TextPopupDialog.ARG_MESSAGE, gun.getDamageLong());
                         break;
                     case R.id.text_accuracy:
                         args.putInt(TextPopupDialog.ARG_TITLE, R.string.accuracy);
-                        args.putString(TextPopupDialog.ARG_MESSAGE, Arrays.getInstance().guns.get(gunSpinner.getSelectedItemPosition()).getAccuracyLong());
+                        args.putString(TextPopupDialog.ARG_MESSAGE, gun.getAccuracyLong());
                         break;
                     case R.id.text_mode:
                         args.putInt(TextPopupDialog.ARG_TITLE, R.string.mode);
-                        args.putString(TextPopupDialog.ARG_MESSAGE, Arrays.getInstance().guns.get(gunSpinner.getSelectedItemPosition()).getModesLong());
+                        args.putString(TextPopupDialog.ARG_MESSAGE, gun.getModesLong());
                         break;
                     case R.id.text_ammo:
                         args.putInt(TextPopupDialog.ARG_TITLE, R.string.ammo);
-                        args.putString(TextPopupDialog.ARG_MESSAGE, Arrays.getInstance().guns.get(gunSpinner.getSelectedItemPosition()).getAmmoLong());
+                        args.putString(TextPopupDialog.ARG_MESSAGE, gun.getAmmoLong());
+                        break;
+                    case R.id.text_damage_mod:
+                        args.putInt(TextPopupDialog.ARG_TITLE, R.string.damage_modifier);
+                        args.putString(TextPopupDialog.ARG_MESSAGE, gun.clips.get(Integer.parseInt(uri.getQueryParameter(ARG_CLIP_INDEX))).getDamageModLong());
                         break;
                 }
                 frag.setArguments(args);
@@ -157,6 +169,14 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
                             .setMessage("You can't mount there.");
                     builder.create().show();
                 }
+                break;
+            case DIALOG_CHANGE_AMMO:
+                frag = new ChangeAmmoDialog();
+                args = new Bundle();
+                args.putString(ChangeAmmoDialog.ARG_GUN_TYPE, gun.getType());
+                args.putInt(ARG_CLIP_INDEX, Integer.parseInt(uri.getQueryParameter(ARG_CLIP_INDEX)));
+                frag.setArguments(args);
+                frag.show(getSupportFragmentManager(), DIALOG_CHANGE_AMMO);
                 break;
             default:
                 System.out.println(uri.getLastPathSegment());
@@ -228,7 +248,22 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
                     mav.invalidate();
                 }
                 break;
-
+            case DIALOG_CHANGE_AMMO:
+                Clip clip = gun.clips.get(data.getInt(ARG_CLIP_INDEX));
+                clip.returnAmmo();
+                clip.setAmmo(arrays.getAmmo(gun.getType(), data.getString(ChangeAmmoDialog.ARG_AMMO_TYPE)));
+                TextView tv = (TextView)findViewById(R.id.text_ammo_type);
+                tv.setText(clip.getAmmoType());
+                tv = (TextView)findViewById(R.id.text_damage_mod);
+                tv.setText(clip.getDamageModShort());
+                tv = (TextView)findViewById(R.id.text_ap_mod);
+                tv.setText(clip.getAPMod());
+                tv = (TextView)findViewById(R.id.text_in_clip);
+                tv.setText(clip.getAmmoCountString());
+                Spinner spinner = (Spinner)findViewById(R.id.spinner_clips);
+                ArrayAdapter<Clip> adapter = (ArrayAdapter<Clip>)spinner.getAdapter();
+                adapter.notifyDataSetChanged();
+                break;
         }
     }
 

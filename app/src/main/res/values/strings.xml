@@ -46,4 +46,12 @@
     <string name="reload">Reload</string>
     <string name="delete">Delete</string>
     <string name="current">Current</string>
+    <string name="character">Character</string>
+    <string name="agility">Agility</string>
+    <string name="strength">Strength</string>
+    <string name="automatics">Automatics</string>
+    <string name="longarms">Longarms</string>
+    <string name="pistols">Pistols</string>
+    <string name="exotic_ranged_weapon">Exotic ranged weapon</string>
+    <string name="smart_link_aug">Smart link with augmentation</string>
 </resources>

@@ -45,6 +45,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/black"
             android:layout_marginRight="5dp"
+            android:clickable="true"
             android:text="Regular"/>
 
         <Button

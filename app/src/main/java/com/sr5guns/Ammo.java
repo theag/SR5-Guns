@@ -30,10 +30,10 @@ public class Ammo {
         }
         rv += template.damage;
         if(template.damageType != null) {
-            rv += template.damageType;
+            rv += template.damageType.charAt(0);
         }
         if(template.damageSubType != null) {
-            rv += "(" +template.damageSubType +")";
+            rv += "(" +template.damageSubType.charAt(0) +")";
         }
         if(rv.compareTo("0") == 0) {
             return "--";
@@ -49,6 +49,28 @@ public class Ammo {
         } else {
             return ""+template.ap;
         }
+    }
+
+    public boolean isDamageInteresting() {
+        return template.damageType != null || template.damageSubType != null;
+    }
+
+    public String getDamageModLong() {
+        String rv = "";
+        if(template.damage > 0) {
+            rv += "+";
+        }
+        rv += template.damage;
+        if(template.damageType != null) {
+            rv += "\n" +template.damageType;
+        }
+        if(template.damageSubType != null) {
+            rv += "\n" +template.damageSubType;
+        }
+        if(rv.compareTo("0") == 0) {
+            return "--";
+        }
+        return rv;
     }
 
     public static final class Template {
