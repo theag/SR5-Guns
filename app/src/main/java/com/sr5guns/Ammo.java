@@ -7,6 +7,11 @@ import java.util.StringTokenizer;
  */
 public class Ammo {
 
+    public static Ammo load(String input) {
+        StringTokenizer tokens = new StringTokenizer(input, Arrays.unitSep);
+        return new Ammo(Arrays.getInstance().getAmmoTemplate(tokens.nextToken()), tokens.nextToken(), Integer.parseInt(tokens.nextToken()));
+    }
+
     private final Template template;
     public final String gunType;
     public int count;
@@ -77,11 +82,6 @@ public class Ammo {
 
     public String save() {
         return template.name +Arrays.unitSep +gunType +Arrays.unitSep +count;
-    }
-
-    public static Ammo load(String input) {
-        StringTokenizer tokens = new StringTokenizer(input, Arrays.unitSep);
-        return new Ammo(Arrays.getInstance().getAmmoTemplate(tokens.nextToken()), tokens.nextToken(), Integer.parseInt(tokens.nextToken()));
     }
 
     public static final class Template {

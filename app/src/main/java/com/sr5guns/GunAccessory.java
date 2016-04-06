@@ -16,6 +16,14 @@ public class GunAccessory {
         return add;
     }
 
+    public static GunAccessory load(String input, String delimiter) {
+        StringTokenizer tokens = new StringTokenizer(input, delimiter);
+        GunAccessory rv = new GunAccessory(Arrays.getInstance().getAccessoryTemplate(tokens.nextToken()), Boolean.parseBoolean(tokens.nextToken()));
+        rv.using = Boolean.parseBoolean(tokens.nextToken());
+        rv.wireless = Boolean.parseBoolean(tokens.nextToken());
+        return rv;
+    }
+
     private final Template template;
     public final boolean permanent;
     public boolean using;
@@ -60,14 +68,6 @@ public class GunAccessory {
 
     public String save(String delimiter) {
         return template.name +delimiter +permanent +delimiter +using +delimiter +wireless +delimiter;
-    }
-
-    public static GunAccessory load(String input, String delimiter) {
-        StringTokenizer tokens = new StringTokenizer(input, delimiter);
-        GunAccessory rv = new GunAccessory(Arrays.getInstance().getAccessoryTemplate(tokens.nextToken()), Boolean.parseBoolean(tokens.nextToken()));
-        rv.using = Boolean.parseBoolean(tokens.nextToken());
-        rv.wireless = Boolean.parseBoolean(tokens.nextToken());
-        return rv;
     }
 
     public static final class Template {

@@ -7,20 +7,33 @@ import java.util.StringTokenizer;
  */
 public class Clip {
 
+    public static Clip load(String input, String delimiter, String gunType) {
+        StringTokenizer tokens = new StringTokenizer(input, delimiter);
+        Clip rv = new Clip(tokens.nextToken(), Integer.parseInt(tokens.nextToken()), Arrays.getInstance().getAmmo(gunType, tokens.nextToken()));
+        rv.bulletCount = Integer.parseInt(tokens.nextToken());
+        return rv;
+    }
+
     public final String type;
     public final int size;
     private Ammo ammo;
     private int bulletCount;
+    public boolean isCurrent;
 
     public Clip(String type, int size, Ammo ammo) {
         this.type = type;
         this.size = size;
         this.ammo = ammo;
         this.bulletCount = 0;
+        isCurrent = false;
     }
 
     public String toString() {
-        return ammo.getName() +" (" +type +")";
+        String rv = ammo.getName() +" (" +type +")";
+        if(isCurrent) {
+            rv += " Current";
+        }
+        return rv;
     }
 
     public void reload() {
@@ -77,12 +90,5 @@ public class Clip {
 
     public String save(String delimiter) {
         return type +delimiter +size +delimiter +ammo.getName() +delimiter +bulletCount;
-    }
-
-    public static Clip load(String input, String delimiter, String gunType) {
-        StringTokenizer tokens = new StringTokenizer(input, delimiter);
-        Clip rv = new Clip(tokens.nextToken(), Integer.parseInt(tokens.nextToken()), Arrays.getInstance().getAmmo(gunType, tokens.nextToken()));
-        rv.bulletCount = Integer.parseInt(tokens.nextToken());
-        return rv;
     }
 }

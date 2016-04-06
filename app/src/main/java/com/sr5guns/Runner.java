@@ -1,6 +1,11 @@
 package com.sr5guns;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  * Created by Thea on 2016-04-02.
@@ -14,6 +19,22 @@ public class Runner {
             instance = new Runner();
         }
         return instance;
+    }
+
+    public static void loadRunner(String line) {
+        if(instance == null) {
+            instance = new Runner();
+        }
+        StringTokenizer tokens = new StringTokenizer(line, Arrays.recordSep);
+        instance.smartLinkWithAug = Boolean.parseBoolean(tokens.nextToken());
+        instance.agility = Integer.parseInt(tokens.nextToken());
+        instance.strength = Integer.parseInt(tokens.nextToken());
+        instance.automatics = Integer.parseInt(tokens.nextToken());
+        instance.longarms = Integer.parseInt(tokens.nextToken());
+        instance.pistols = Integer.parseInt(tokens.nextToken());
+        while(tokens.hasMoreTokens()) {
+            instance.exotics.add(Skill.load(tokens.nextToken()));
+        }
     }
 
     public boolean smartLinkWithAug;
@@ -39,6 +60,14 @@ public class Runner {
         }
     }
 
+    public String save() {
+        String rv = smartLinkWithAug +Arrays.recordSep +agility +Arrays.recordSep +strength +Arrays.recordSep +automatics +Arrays.recordSep +longarms +Arrays.recordSep +pistols;
+        for(Skill skill : exotics) {
+            rv += Arrays.recordSep +skill.save();
+        }
+        return rv;
+    }
+
     public int getExoticSkillCount() {
         return exotics.size();
     }
@@ -61,6 +90,11 @@ public class Runner {
     }
 
     public static final class Skill {
+        public static Skill load(String line) {
+            StringTokenizer tokens = new StringTokenizer(line, Arrays.unitSep);
+            return new Skill(tokens.nextToken(), Integer.parseInt(tokens.nextToken()));
+        }
+
         public String name;
         public int value;
 
@@ -72,6 +106,10 @@ public class Runner {
         public Skill(String name, int value) {
             this.name = name;
             this.value = value;
+        }
+
+        public String save() {
+            return name +Arrays.unitSep +value;
         }
     }
 

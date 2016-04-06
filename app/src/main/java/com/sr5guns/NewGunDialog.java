@@ -20,6 +20,7 @@ public class NewGunDialog extends DialogFragment {
 
     public interface OnClickListener {
         void onDialogClick(String tag, Bundle data);
+        void pacifist();
     }
 
     private OnClickListener listener;
@@ -59,6 +60,14 @@ public class NewGunDialog extends DialogFragment {
                     .setCancelable(true);
         }
         return builder.create();
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        super.onCancel(dialog);
+        if(listener != null && (getTag().compareTo(MainActivity.DIALOG_FIRST_GUN_1) == 0 || getTag().compareTo(MainActivity.DIALOG_FIRST_GUN_2) == 0)) {
+            listener.pacifist();
+        }
     }
 
     private void doGunClick(int which) {

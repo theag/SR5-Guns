@@ -54,4 +54,9 @@
     <string name="pistols">Pistols</string>
     <string name="exotic_ranged_weapon">Exotic ranged weapon</string>
     <string name="smart_link_aug">Smart link with augmentation</string>
+    <string name="smartgun_over_laser">Use smart link over laser sight</string>
+    <string name="wireless">Wireless</string>
+    <string name="dice_pool">Dice Pool</string>
+    <string name="current_recoil">Current Recoil Penalty</string>
+    <string name="recoil_increase">Recoil Increase</string>
 </resources>

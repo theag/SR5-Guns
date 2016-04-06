@@ -1,6 +1,7 @@
 package com.sr5guns;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.net.Uri;
@@ -26,16 +27,18 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
         AddAccessoryDialog.OnClickListener, ReplaceAccessoryDialog.OnClickListener, ClipFragment.OnFragmentInteractionListener,
         ChangeAmmoDialog.OnClickListener {
 
-    private static final String DIALOG_NEW_GUN_1 = "new gun dialog 1";
-    private static final String DIALOG_NEW_GUN_2 = "new gun dialog 2";
+    public static final String DIALOG_NEW_GUN_1 = "new gun dialog 1";
+    public static final String DIALOG_NEW_GUN_2 = "new gun dialog 2";
     public static final String DIALOG_TEXT_POPUP = "text popup dialog";
     public static final String ARG_VIEW_ID = "arg view id";
     public static final String DIALOG_ADD_ACCESSORY = "add accessory dialog";
-    private static final String DIALOG_REPLACE_ACCESSORY = "repalce accessory dialog";
+    public static final String DIALOG_REPLACE_ACCESSORY = "repalce accessory dialog";
     public static final String ARG_MOUNT = "mount";
     public static final String ARG_OTHER_ACCESSORY_INDEX = "other accessory index";
     public static final String DIALOG_CHANGE_AMMO = "change ammo";
     public static final String ARG_CLIP_INDEX = "clip index";
+    public static final String DIALOG_FIRST_GUN_1 = "first gun dialog 1";
+    public static final String DIALOG_FIRST_GUN_2 = "first gun dialog 2";
 
     TabsPagerAdapter tabsPagerAdapter;
     ViewPager viewPager;
@@ -57,23 +60,61 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
         } catch (IOException e) {
             e.printStackTrace(System.out);
         }
+        gunArray.load(getFilesDir());
+
+        PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.pagerTabStrip);
+        pagerTabStrip.setTabIndicatorColorResource(R.color.colorAccent);
+
         if(gunArray.guns.isEmpty()) {
-            gunArray.addGun(0);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Warning")
+                    .setMessage("You don't have any guns chummer, you'll need to have at least one.")
+                    .setPositiveButton("Gimme a gun", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            getFirstGun();
+                        }
+                    })
+                    .setNegativeButton("I don't want a gun", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            pacifist();
+                        }
+                    })
+                    .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            pacifist();
+                        }
+                    });
+            builder.create().show();
+        } else {
+            init();
         }
 
-        gunSpinner = (Spinner)findViewById(R.id.spinner_guns);
-        gunArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, gunArray.guns);
+    }
+
+    public void pacifist() {
+        finish();
+    }
+
+    private void getFirstGun() {
+        NewGunDialog frag = new NewGunDialog();
+        frag.show(getSupportFragmentManager(), DIALOG_FIRST_GUN_1);
+    }
+
+    private void init() {
+
+        gunSpinner = (Spinner) findViewById(R.id.spinner_guns);
+        gunArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Arrays.getInstance().guns);
         gunArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         gunSpinner.setAdapter(gunArrayAdapter);
         gunSpinner.setOnItemSelectedListener(this);
 
         tabsPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager());
-        viewPager = (ViewPager)findViewById(R.id.pager);
+        viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setAdapter(tabsPagerAdapter);
-        viewPager.setCurrentItem(2);
-
-        PagerTabStrip pagerTabStrip = (PagerTabStrip)findViewById(R.id.pagerTabStrip);
-        pagerTabStrip.setTabIndicatorColorResource(R.color.colorAccent);
+        viewPager.setCurrentItem(0);
 
     }
 
@@ -196,7 +237,10 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
         Arrays arrays = Arrays.getInstance();
         DialogFragment frag;
         Bundle args;
-        Gun gun = (Gun)gunSpinner.getSelectedItem();
+        Gun gun = null;
+        if(gunSpinner != null) {
+            gun = (Gun) gunSpinner.getSelectedItem();
+        }
         switch(tag) {
             case DIALOG_NEW_GUN_1:
                 frag = new NewGunDialog();
@@ -207,6 +251,18 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
                 break;
             case DIALOG_NEW_GUN_2:
                 int index = arrays.addGun(data.getString(NewGunDialog.ARG_GUN_TEMPLATE_NAME));
+                gunSpinner.setSelection(index);
+                break;
+            case DIALOG_FIRST_GUN_1:
+                frag = new NewGunDialog();
+                args = new Bundle();
+                args.putInt(NewGunDialog.ARG_GUN_TYPE_INDEX, data.getInt(NewGunDialog.ARG_GUN_TYPE_INDEX));
+                frag.setArguments(args);
+                frag.show(getSupportFragmentManager(), DIALOG_FIRST_GUN_2);
+                break;
+            case DIALOG_FIRST_GUN_2:
+                index = arrays.addGun(data.getString(NewGunDialog.ARG_GUN_TEMPLATE_NAME));
+                init();
                 gunSpinner.setSelection(index);
                 break;
             case DIALOG_ADD_ACCESSORY:

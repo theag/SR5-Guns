@@ -22,6 +22,30 @@ public class Gun {
         }
     }
 
+    public static Gun load(String input) {
+        StringTokenizer tokens = new StringTokenizer(input, Arrays.recordSep);
+        Gun rv = new Gun(Arrays.getInstance().getGunTemplate(tokens.nextToken()), Integer.parseInt(tokens.nextToken()));
+        String line;
+        for(int i = 0; i < rv.mountedAccessories.length; i++) {
+            line = tokens.nextToken();
+            if(line.compareTo(Arrays.nullChar) != 0) {
+                rv.mountedAccessories[i] = GunAccessory.load(line, Arrays.unitSep);
+            }
+        }
+        while(tokens.hasMoreTokens()) {
+            line = tokens.nextToken();
+            if(line.compareTo(Arrays.groupSep) == 0) {
+                break;
+            }
+            rv.otherAccessories.add(GunAccessory.load(line, Arrays.unitSep));
+        }
+        while(tokens.hasMoreTokens()) {
+            rv.clips.add(Clip.load(tokens.nextToken(), Arrays.unitSep, rv.template.type));
+        }
+        rv.clips.get(rv.currentClip).isCurrent = true;
+        return rv;
+    }
+
     private final Template template;
     private final GunAccessory[] mountedAccessories;  //top barrel underbarrel
     private final ArrayList<GunAccessory> otherAccessories;
@@ -39,7 +63,7 @@ public class Gun {
         clips = new ArrayList<>();
         Arrays arrays = Arrays.getInstance();
         Ammo ammo = arrays.getAmmo(template.type, "Regular");
-        if(ammo == null) {
+        if (ammo == null) {
             ammo = new Ammo(arrays.getAmmoTemplate("Regular"), template.type, template.ammoCount);
             arrays.ammo.add(ammo);
         } else {
@@ -49,6 +73,19 @@ public class Gun {
         clip.reload();
         clips.add(clip);
         currentClip = 0;
+        clip.isCurrent = true;
+    }
+
+    private Gun(Template template, int currentClip) {
+        this.template = template;
+        mountedAccessories = new GunAccessory[3];
+        System.arraycopy(template.mountedAccessories, 0, mountedAccessories, 0, 3);
+        otherAccessories = new ArrayList<>();
+        for(GunAccessory accessory : template.otherAccessories) {
+            otherAccessories.add(accessory);
+        }
+        clips = new ArrayList<>();
+        this.currentClip = currentClip;
     }
 
     @Override
@@ -415,7 +452,9 @@ public class Gun {
     }
 
     public void setCurrent(Clip clip) {
+        clips.get(currentClip).isCurrent = false;
         currentClip = clips.indexOf(clip);
+        clip.isCurrent = true;
     }
 
     public String getClipType() {
@@ -423,7 +462,7 @@ public class Gun {
     }
 
     public String save() {
-        String rv = template.name;
+        String rv = template.name + Arrays.recordSep +currentClip;
         for(GunAccessory accessory : mountedAccessories) {
             rv += Arrays.recordSep;
             if(accessory == null) {
@@ -438,29 +477,6 @@ public class Gun {
         rv += Arrays.recordSep + Arrays.groupSep;
         for(Clip clip : clips) {
             rv += Arrays.recordSep +clip.save(Arrays.unitSep);
-        }
-        return rv;
-    }
-
-    public static Gun load(String input) {
-        StringTokenizer tokens = new StringTokenizer(input, Arrays.recordSep);
-        Gun rv = new Gun(Arrays.getInstance().getGunTemplate(tokens.nextToken()));
-        String line;
-        for(int i = 0; i < rv.mountedAccessories.length; i++) {
-            line = tokens.nextToken();
-            if(line.compareTo(Arrays.nullChar) != 0) {
-                rv.mountedAccessories[i] = GunAccessory.load(line, Arrays.unitSep);
-            }
-        }
-        while(tokens.hasMoreTokens()) {
-            line = tokens.nextToken();
-            if(line.compareTo(Arrays.groupSep) == 0) {
-                break;
-            }
-            rv.otherAccessories.add(GunAccessory.load(line, Arrays.unitSep));
-        }
-        while(tokens.hasMoreTokens()) {
-            rv.clips.add(Clip.load(tokens.nextToken(), Arrays.unitSep, rv.template.type));
         }
         return rv;
     }

@@ -269,6 +269,7 @@ public class Arrays {
     public void save(File dir) {
         try {
             PrintWriter outFile = new PrintWriter(new File(dir, "saveFile.txt"));
+            outFile.println(Runner.getInstance().save());
             for(Ammo a : ammo) {
                 outFile.println(a.save());
             }
@@ -283,8 +284,11 @@ public class Arrays {
     }
 
     public void load(File dir) {
+        ammo.clear();
+        guns.clear();
         try {
             BufferedReader inFile = new BufferedReader(new FileReader(new File(dir, "saveFile.txt")));
+            Runner.loadRunner(inFile.readLine());
             String line = inFile.readLine();
             while(line != null && line.compareTo(fileSep) != 0) {
                 ammo.add(Ammo.load(line));
