@@ -1,5 +1,7 @@
 package com.sr5guns;
 
+import java.util.StringTokenizer;
+
 /**
  * Created by nbp184 on 2016/03/30.
  */
@@ -53,6 +55,18 @@ public class GunAccessory {
         if(permanent) {
             rv += " (P)";
         }
+        return rv;
+    }
+
+    public String save(String delimiter) {
+        return template.name +delimiter +permanent +delimiter +using +delimiter +wireless +delimiter;
+    }
+
+    public static GunAccessory load(String input, String delimiter) {
+        StringTokenizer tokens = new StringTokenizer(input, delimiter);
+        GunAccessory rv = new GunAccessory(Arrays.getInstance().getAccessoryTemplate(tokens.nextToken()), Boolean.parseBoolean(tokens.nextToken()));
+        rv.using = Boolean.parseBoolean(tokens.nextToken());
+        rv.wireless = Boolean.parseBoolean(tokens.nextToken());
         return rv;
     }
 

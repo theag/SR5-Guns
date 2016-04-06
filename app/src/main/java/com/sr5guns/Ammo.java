@@ -1,5 +1,7 @@
 package com.sr5guns;
 
+import java.util.StringTokenizer;
+
 /**
  * Created by nbp184 on 2016/04/01.
  */
@@ -57,20 +59,29 @@ public class Ammo {
 
     public String getDamageModLong() {
         String rv = "";
-        if(template.damage > 0) {
+        if (template.damage > 0) {
             rv += "+";
         }
         rv += template.damage;
-        if(template.damageType != null) {
-            rv += "\n" +template.damageType;
+        if (template.damageType != null) {
+            rv += "\n" + template.damageType;
         }
-        if(template.damageSubType != null) {
-            rv += "\n" +template.damageSubType;
+        if (template.damageSubType != null) {
+            rv += "\n" + template.damageSubType;
         }
-        if(rv.compareTo("0") == 0) {
+        if (rv.compareTo("0") == 0) {
             return "--";
         }
         return rv;
+    }
+
+    public String save() {
+        return template.name +Arrays.unitSep +gunType +Arrays.unitSep +count;
+    }
+
+    public static Ammo load(String input) {
+        StringTokenizer tokens = new StringTokenizer(input, Arrays.unitSep);
+        return new Ammo(Arrays.getInstance().getAmmoTemplate(tokens.nextToken()), tokens.nextToken(), Integer.parseInt(tokens.nextToken()));
     }
 
     public static final class Template {

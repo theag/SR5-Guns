@@ -1,5 +1,7 @@
 package com.sr5guns;
 
+import java.util.StringTokenizer;
+
 /**
  * Created by nbp184 on 2016/04/01.
  */
@@ -71,5 +73,16 @@ public class Clip {
 
     public String getDamageModLong() {
         return ammo.getDamageModLong();
+    }
+
+    public String save(String delimiter) {
+        return type +delimiter +size +delimiter +ammo.getName() +delimiter +bulletCount;
+    }
+
+    public static Clip load(String input, String delimiter, String gunType) {
+        StringTokenizer tokens = new StringTokenizer(input, delimiter);
+        Clip rv = new Clip(tokens.nextToken(), Integer.parseInt(tokens.nextToken()), Arrays.getInstance().getAmmo(gunType, tokens.nextToken()));
+        rv.bulletCount = Integer.parseInt(tokens.nextToken());
+        return rv;
     }
 }
