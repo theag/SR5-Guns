@@ -6,6 +6,10 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.sr5guns.adapters.AmmoListAdapter;
+import com.sr5guns.dialogs.AddAmmoDialog;
+import com.sr5guns.items.Arrays;
+
 public class AmmoActivity extends AppCompatActivity implements AddAmmoDialog.OnClickListener {
 
     private static final String DIALOG_ADD_AMMO = "add ammo dialog";

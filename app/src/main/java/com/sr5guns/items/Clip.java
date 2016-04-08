@@ -1,4 +1,4 @@
-package com.sr5guns;
+package com.sr5guns.items;
 
 import java.util.StringTokenizer;
 
@@ -90,5 +90,9 @@ public class Clip {
 
     public String save(String delimiter) {
         return type +delimiter +size +delimiter +ammo.getName() +delimiter +bulletCount;
+    }
+
+    public int getBulletCount() {
+        return bulletCount;
     }
 }

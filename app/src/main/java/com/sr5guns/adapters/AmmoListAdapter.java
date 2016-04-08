@@ -1,14 +1,17 @@
-package com.sr5guns;
+package com.sr5guns.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
+import com.sr5guns.R;
+import com.sr5guns.items.Ammo;
+import com.sr5guns.items.Arrays;
 
 /**
  * Created by nbp184 on 2016/04/01.

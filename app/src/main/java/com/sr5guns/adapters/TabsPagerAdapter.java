@@ -1,7 +1,12 @@
-package com.sr5guns;
+package com.sr5guns.adapters;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.sr5guns.ClipFragment;
+import com.sr5guns.GunDetailsFragment;
+import com.sr5guns.GunFiringFragment;
+import com.sr5guns.GunFragment;
 
 /**
  * Created by nbp184 on 2016/03/30.

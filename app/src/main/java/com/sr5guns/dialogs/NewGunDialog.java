@@ -1,4 +1,4 @@
-package com.sr5guns;
+package com.sr5guns.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -7,6 +7,9 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+
+import com.sr5guns.MainActivity;
+import com.sr5guns.items.Arrays;
 
 /**
  * Created by nbp184 on 2016/03/30.

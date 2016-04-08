@@ -1,4 +1,4 @@
-package com.sr5guns;
+package com.sr5guns.items;
 
 import java.util.StringTokenizer;
 

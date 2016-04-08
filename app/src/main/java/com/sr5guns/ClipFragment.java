@@ -14,6 +14,10 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.sr5guns.items.Arrays;
+import com.sr5guns.items.Clip;
+import com.sr5guns.items.Gun;
+
 
 /**
  * A simple {@link Fragment} subclass.

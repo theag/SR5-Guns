@@ -1,4 +1,4 @@
-package com.sr5guns;
+package com.sr5guns.items;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -477,6 +477,40 @@ public class Gun {
         rv += Arrays.recordSep + Arrays.groupSep;
         for(Clip clip : clips) {
             rv += Arrays.recordSep +clip.save(Arrays.unitSep);
+        }
+        return rv;
+    }
+
+    public String[] getFiringModes() {
+        int count = 0;
+        if((template.modes & 0b1000) > 0) {
+            count += 1;
+        }
+        if((template.modes & 0b0100) > 0) {
+            count += 2;
+        }
+        if((template.modes & 0b0010) > 0) {
+            count += 2;
+        }
+        if((template.modes & 0b0001) > 0) {
+            count += 2;
+        }
+        String[] rv = new String[count];
+        count = 0;
+        if((template.modes & 0b1000) > 0) {
+            rv[count++] = "Single Shot";
+        }
+        if((template.modes & 0b0100) > 0) {
+            rv[count++] = "Semi Auto";
+            rv[count++] = "Semi Auto Burst";
+        }
+        if((template.modes & 0b0010) > 0) {
+            rv[count++] = "Burst Fire";
+            rv[count++] = "Long Burst";
+        }
+        if((template.modes & 0b0001) > 0) {
+            rv[count++] = "Full Auto";
+            rv[count++] = "Surpressive Fire";
         }
         return rv;
     }

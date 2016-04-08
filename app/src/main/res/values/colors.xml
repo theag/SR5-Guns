@@ -3,4 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="bulletBody">#DAA520</color>
+    <color name="bulletHead">#B87333</color>
+    <color name="bulletBodyTrans">#80DAA520</color>
+    <color name="bulletHeadTrans">#80B87333</color>
 </resources>

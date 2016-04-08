@@ -11,6 +11,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.sr5guns.adapters.AccessoryAdapter;
+import com.sr5guns.items.Arrays;
+import com.sr5guns.items.Gun;
+import com.sr5guns.views.MountedAccessoriesView;
+
 
 /**
  * A simple {@link Fragment} subclass.

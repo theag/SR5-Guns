@@ -59,4 +59,8 @@
     <string name="dice_pool">Dice Pool</string>
     <string name="current_recoil">Current Recoil Penalty</string>
     <string name="recoil_increase">Recoil Increase</string>
+    <string name="wound_penalty">Wound Penalty</string>
+    <string name="reset_recoil">Reset Recoil</string>
+    <string name="fire">Fire</string>
+    <string name="firing_mode">Firing Mode</string>
 </resources>

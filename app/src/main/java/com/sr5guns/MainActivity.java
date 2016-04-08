@@ -20,6 +20,18 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.sr5guns.adapters.AccessoryAdapter;
+import com.sr5guns.adapters.TabsPagerAdapter;
+import com.sr5guns.dialogs.AddAccessoryDialog;
+import com.sr5guns.dialogs.ChangeAmmoDialog;
+import com.sr5guns.dialogs.NewGunDialog;
+import com.sr5guns.dialogs.ReplaceAccessoryDialog;
+import com.sr5guns.dialogs.TextPopupDialog;
+import com.sr5guns.items.Arrays;
+import com.sr5guns.items.Clip;
+import com.sr5guns.items.Gun;
+import com.sr5guns.views.MountedAccessoriesView;
+
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements GunFiringFragment.OnFragmentInteractionListener,

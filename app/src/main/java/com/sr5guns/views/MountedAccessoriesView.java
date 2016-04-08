@@ -1,15 +1,16 @@
-package com.sr5guns;
+package com.sr5guns.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.Build;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.sr5guns.items.Arrays;
+import com.sr5guns.items.Gun;
 
 /**
  * Created by nbp184 on 2016/03/30.
@@ -193,8 +194,8 @@ public class MountedAccessoriesView extends View implements GestureDetector.OnGe
                     gunHeight = height - getPaddingTop() - getPaddingBottom() - textBoxHeight;
                 }
                 height = gunHeight + textBoxHeight;
-                setMeasuredDimension(width, height);
             }
+            setMeasuredDimension(width, height);
         }
     }
 

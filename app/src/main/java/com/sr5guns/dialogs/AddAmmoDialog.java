@@ -1,4 +1,4 @@
-package com.sr5guns;
+package com.sr5guns.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,6 +12,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
+import com.sr5guns.R;
+import com.sr5guns.items.Ammo;
+import com.sr5guns.items.Arrays;
 
 /**
  * Created by nbp184 on 2016/04/01.

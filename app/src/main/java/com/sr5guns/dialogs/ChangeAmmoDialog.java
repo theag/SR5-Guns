@@ -1,4 +1,4 @@
-package com.sr5guns;
+package com.sr5guns.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,14 +8,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
-/**
- * Created by nbp184 on 2016/03/31.
- */
-public class AddAccessoryDialog extends DialogFragment {
+import com.sr5guns.MainActivity;
+import com.sr5guns.items.Arrays;
 
-    public static final String ARG_MOUNT = "mount";
-    public static final String ARG_NAME = "name";
-    public static final String ARG_OTHER_INDEX = "other index";
+/**
+ * Created by Thea on 2016-04-02.
+ */
+public class ChangeAmmoDialog extends DialogFragment {
+
+    public static final String ARG_AMMO_TYPE = "ammo type";
+    public static final String ARG_GUN_TYPE = "gun type";
 
     public interface OnClickListener {
         void onDialogClick(String tag, Bundle data);
@@ -23,8 +25,7 @@ public class AddAccessoryDialog extends DialogFragment {
 
     private OnClickListener listener;
     private String[] items;
-    private byte mount;
-    private int otherIndex;
+    private int clipIndex;
 
     @Override
     public void onAttach(Activity activity) {
@@ -37,11 +38,10 @@ public class AddAccessoryDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        mount = getArguments().getByte(ARG_MOUNT);
-        otherIndex = getArguments().getInt(ARG_OTHER_INDEX, -1);
-        items = Arrays.getInstance().getAccessoryTemplateNameArray(mount);
+        items = Arrays.getInstance().getAmmoNames(getArguments().getString(ARG_GUN_TYPE));
+        clipIndex = getArguments().getInt(MainActivity.ARG_CLIP_INDEX);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Add " +Gun.getMountName(mount) +" Accessory")
+        builder.setTitle("Change Ammo")
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -55,11 +55,8 @@ public class AddAccessoryDialog extends DialogFragment {
     private void doClick(int which) {
         if(listener != null) {
             Bundle data = new Bundle();
-            data.putByte(ARG_MOUNT, mount);
-            data.putString(ARG_NAME, items[which]);
-            if(mount == 0b1000) {
-                data.putInt(ARG_OTHER_INDEX, otherIndex);
-            }
+            data.putString(ARG_AMMO_TYPE, items[which]);
+            data.putInt(MainActivity.ARG_CLIP_INDEX, clipIndex);
             listener.onDialogClick(getTag(), data);
         }
     }

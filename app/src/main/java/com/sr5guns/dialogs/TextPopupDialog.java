@@ -1,4 +1,4 @@
-package com.sr5guns;
+package com.sr5guns.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
