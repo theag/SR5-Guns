@@ -84,6 +84,10 @@ public class Ammo {
         return template.name +Arrays.unitSep +gunType +Arrays.unitSep +count;
     }
 
+    public int getAPModInt() {
+        return template.ap;
+    }
+
     public static final class Template {
         public final String name;
         public final int damage;

@@ -85,6 +85,15 @@ public class Runner {
         exotics.add(new Skill(name));
     }
 
+    public int getExoticSkill(String name) {
+        for(Skill skill : exotics) {
+            if(skill.name.compareTo(name) == 0) {
+                return skill.value;
+            }
+        }
+        return 0;
+    }
+
     public static final class Skill {
         public static Skill load(String line) {
             StringTokenizer tokens = new StringTokenizer(line, Arrays.unitSep);

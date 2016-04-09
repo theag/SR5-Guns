@@ -515,6 +515,78 @@ public class Gun {
         return rv;
     }
 
+    public int getAccessoryBonuses(String stat, boolean smartLinkOverLaser, boolean wireless, boolean smartLinkWithAug) {
+        int bonus = 0;
+        int smartlink = 0;
+        int laser = 0;
+        for(GunAccessory accessory : mountedAccessories) {
+            switch(accessory.getName()) {
+                case "Laser sight":
+                    laser += accessory.getBonus(stat);
+                    if(wireless) {
+                        laser += accessory.getWirelessBonus(stat);
+                    }
+                    break;
+                case "Smart gun":
+                    smartlink += accessory.getBonus(stat);
+                    if(wireless) {
+                        smartlink += accessory.getWirelessBonus(stat);
+                    }
+                    break;
+                default:
+                    bonus += accessory.getBonus(stat);
+                    if(wireless) {
+                        bonus += accessory.getWirelessBonus(stat);
+                    }
+            }
+        }
+        for(GunAccessory accessory : otherAccessories) {
+            switch(accessory.getName()) {
+                case "Laser sight":
+                    laser += accessory.getBonus(stat);
+                    if(wireless) {
+                        laser += accessory.getWirelessBonus(stat);
+                    }
+                    break;
+                case "Smart gun":
+                    smartlink += accessory.getBonus(stat);
+                    if(wireless) {
+                        smartlink += accessory.getWirelessBonus(stat);
+                    }
+                    break;
+                default:
+                    bonus += accessory.getBonus(stat);
+                    if(wireless) {
+                        bonus += accessory.getWirelessBonus(stat);
+                    }
+            }
+        }
+        //TODO: double check this
+        if(smartLinkWithAug) {
+            smartlink *= 2;
+        }
+        if(laser > 0 && smartlink > 0) {
+            if(smartLinkOverLaser) {
+                bonus += smartlink;
+            } else {
+                bonus += laser;
+            }
+        } else if(laser > 0) {
+            bonus += laser;
+        } else if(smartlink > 0) {
+            bonus += smartlink;
+        }
+        return bonus;
+    }
+
+    public int getAccuracy() {
+        return template.accuracy;
+    }
+
+    public int getAP() {
+        return template.ap;
+    }
+
     public static final class Template {
         public final String name;
         public final String type;

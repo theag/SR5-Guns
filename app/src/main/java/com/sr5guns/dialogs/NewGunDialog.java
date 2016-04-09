@@ -18,8 +18,7 @@ public class NewGunDialog extends DialogFragment {
 
     public static final String ARG_GUN_TYPE_INDEX = "gun type ndex";
     public static final String ARG_GUN_TEMPLATE_NAME = "gun tempalte name";
-    private static final String[][] gunTypesSkills = {{"Taser", "Hold-out", "Light pistol", "Heavy pistol", "Machine pistol", "Submachine Gun", "Assault rifle", "Sniper rifle", "Shotgun", "Special weapon"},
-            {"Pistols", "Pistols", "Pistols", "Pistols", "Automatics|Pistols", "Automatics", "Automatics", "Longarms", "Longarms", "Exotic Ranged Weapon"}};
+    private static final String[] gunTypes = {"Taser", "Hold-out", "Light pistol", "Heavy pistol", "Machine pistol", "Submachine Gun", "Assault rifle", "Sniper rifle", "Shotgun", "Special weapon"};
 
     public interface OnClickListener {
         void onDialogClick(String tag, Bundle data);
@@ -43,8 +42,8 @@ public class NewGunDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         if(getArguments() != null && getArguments().getInt(ARG_GUN_TYPE_INDEX, -1) > 0) {
             int index = getArguments().getInt(ARG_GUN_TYPE_INDEX);
-            items = Arrays.getInstance().getTemplateNameArray(gunTypesSkills[0][index]);
-            builder.setTitle("New " +gunTypesSkills[0][index])
+            items = Arrays.getInstance().getTemplateNameArray(gunTypes[index]);
+            builder.setTitle("New " + gunTypes[index])
                     .setItems(items, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -54,7 +53,7 @@ public class NewGunDialog extends DialogFragment {
                     .setCancelable(true);
         } else {
             builder.setTitle("New Gun")
-                    .setItems(gunTypesSkills[0], new DialogInterface.OnClickListener() {
+                    .setItems(gunTypes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             doTypeClick(which);

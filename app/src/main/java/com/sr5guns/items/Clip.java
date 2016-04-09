@@ -95,4 +95,8 @@ public class Clip {
     public int getBulletCount() {
         return bulletCount;
     }
+
+    public int getAPModInt() {
+        return ammo.getAPModInt();
+    }
 }

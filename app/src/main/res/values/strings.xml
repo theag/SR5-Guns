@@ -60,4 +60,5 @@
     <string name="reset_recoil">Reset Recoil</string>
     <string name="fire">Fire</string>
     <string name="firing_mode">Firing Mode</string>
+    <string name="bullet_usage">Bullet Usage</string>
 </resources>
