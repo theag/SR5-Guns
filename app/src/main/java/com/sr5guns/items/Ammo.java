@@ -88,6 +88,18 @@ public class Ammo {
         return template.ap;
     }
 
+    public int getDamageModInt() {
+        return template.damage;
+    }
+
+    public String getDamageType() {
+        return template.damageType;
+    }
+
+    public String getDamageSubtype() {
+        return template.damageSubType;
+    }
+
     public static final class Template {
         public final String name;
         public final int damage;

@@ -99,4 +99,16 @@ public class Clip {
     public int getAPModInt() {
         return ammo.getAPModInt();
     }
+
+    public int getDamageModInt() {
+        return ammo.getDamageModInt();
+    }
+
+    public String getDamageType() {
+        return ammo.getDamageType();
+    }
+
+    public String getDamageSubtype() {
+        return ammo.getDamageSubtype();
+    }
 }

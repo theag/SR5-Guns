@@ -493,7 +493,7 @@ public class Gun {
             count += 2;
         }
         if((template.modes & 0b0001) > 0) {
-            count += 2;
+            count += 3;
         }
         String[] rv = new String[count];
         count = 0;
@@ -509,7 +509,8 @@ public class Gun {
             rv[count++] = "Long Burst";
         }
         if((template.modes & 0b0001) > 0) {
-            rv[count++] = "Full Auto";
+            rv[count++] = "Full Auto (Simp)";
+            rv[count++] = "Full Auto (Cmpx)";
             rv[count++] = "Surpressive Fire";
         }
         return rv;
@@ -520,50 +521,56 @@ public class Gun {
         int smartlink = 0;
         int laser = 0;
         for(GunAccessory accessory : mountedAccessories) {
-            switch(accessory.getName()) {
-                case "Laser sight":
-                    laser += accessory.getBonus(stat);
-                    if(wireless) {
-                        laser += accessory.getWirelessBonus(stat);
-                    }
-                    break;
-                case "Smart gun":
-                    smartlink += accessory.getBonus(stat);
-                    if(wireless) {
-                        smartlink += accessory.getWirelessBonus(stat);
-                    }
-                    break;
-                default:
-                    bonus += accessory.getBonus(stat);
-                    if(wireless) {
-                        bonus += accessory.getWirelessBonus(stat);
-                    }
+            if(accessory != null) {
+                switch (accessory.getName()) {
+                    case "Laser sight":
+                        laser += accessory.getBonus(stat);
+                        if (wireless) {
+                            laser += accessory.getWirelessBonus(stat);
+                        }
+                        break;
+                    case "Smart gun":
+                        smartlink += accessory.getBonus(stat);
+                        if (wireless) {
+                            if(smartLinkWithAug) {
+                                smartlink += 2*accessory.getWirelessBonus(stat);
+                            } else {
+                                smartlink += accessory.getWirelessBonus(stat);
+                            }
+                        }
+                        break;
+                    default:
+                        bonus += accessory.getBonus(stat);
+                        if (wireless) {
+                            bonus += accessory.getWirelessBonus(stat);
+                        }
+                }
             }
         }
         for(GunAccessory accessory : otherAccessories) {
-            switch(accessory.getName()) {
+            switch (accessory.getName()) {
                 case "Laser sight":
                     laser += accessory.getBonus(stat);
-                    if(wireless) {
+                    if (wireless) {
                         laser += accessory.getWirelessBonus(stat);
                     }
                     break;
                 case "Smart gun":
                     smartlink += accessory.getBonus(stat);
-                    if(wireless) {
-                        smartlink += accessory.getWirelessBonus(stat);
+                    if (wireless) {
+                        if(smartLinkWithAug) {
+                            smartlink += 2*accessory.getWirelessBonus(stat);
+                        } else {
+                            smartlink += accessory.getWirelessBonus(stat);
+                        }
                     }
                     break;
                 default:
                     bonus += accessory.getBonus(stat);
-                    if(wireless) {
+                    if (wireless) {
                         bonus += accessory.getWirelessBonus(stat);
                     }
             }
-        }
-        //TODO: double check this
-        if(smartLinkWithAug) {
-            smartlink *= 2;
         }
         if(laser > 0 && smartlink > 0) {
             if(smartLinkOverLaser) {
@@ -585,6 +592,22 @@ public class Gun {
 
     public int getAP() {
         return template.ap;
+    }
+
+    public int getDamageInt() {
+        return template.damage;
+    }
+
+    public String getDamageType() {
+        return template.damageType;
+    }
+
+    public String getDamageSubtype() {
+        return template.damageSubtype;
+    }
+
+    public int getRecoilInt() {
+        return template.recoil;
     }
 
     public static final class Template {

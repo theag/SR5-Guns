@@ -47,7 +47,7 @@ public class ClipView extends View {
     }
 
     public void setClip(Clip clip) {
-        boolean newLayout = clip.size != this.clip.size;
+        boolean newLayout = this.clip == null || clip.size != this.clip.size;
         this.clip = clip;
         if(newLayout) {
             requestLayout();
@@ -131,7 +131,7 @@ public class ClipView extends View {
         return rv;
     }
 
-    private int ceil(float v) {
+    public static int ceil(float v) {
         int rv;
         if(v >= 0) {
             for(rv = 0; rv < v; rv++);
