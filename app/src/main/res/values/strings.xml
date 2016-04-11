@@ -55,10 +55,12 @@
     <string name="wireless">Wireless</string>
     <string name="dice_pool">Dice Pool</string>
     <string name="current_recoil">Current Recoil Penalty</string>
-    <string name="recoil_increase">Recoil Increase</string>
-    <string name="wound_penalty">Wound Penalty</string>
+    <string name="recoil_increase">Recoil\nIncrease</string>
+    <string name="wound_penalty">Wound\nPenalty</string>
     <string name="reset_recoil">Reset Recoil</string>
     <string name="fire">Fire</string>
     <string name="firing_mode">Firing Mode</string>
-    <string name="bullet_usage">Bullet Usage</string>
+    <string name="bullet_usage">Bullet\nUsage</string>
+    <string name="enemy_defense_mod">Enemy\nDefense Mod</string>
+    <string name="action_delete">Delete</string>
 </resources>

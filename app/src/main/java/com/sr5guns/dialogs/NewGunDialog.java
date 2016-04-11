@@ -40,7 +40,7 @@ public class NewGunDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        if(getArguments() != null && getArguments().getInt(ARG_GUN_TYPE_INDEX, -1) > 0) {
+        if(getArguments() != null && getArguments().getInt(ARG_GUN_TYPE_INDEX, -1) >= 0) {
             int index = getArguments().getInt(ARG_GUN_TYPE_INDEX);
             items = Arrays.getInstance().getTemplateNameArray(gunTypes[index]);
             builder.setTitle("New " + gunTypes[index])

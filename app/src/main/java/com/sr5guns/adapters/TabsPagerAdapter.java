@@ -47,8 +47,8 @@ public class TabsPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        if(object instanceof GunDetailsFragment) {
-            GunDetailsFragment frag = (GunDetailsFragment)object;
+        if(object instanceof GunFragment) {
+            GunFragment frag = (GunFragment)object;
             frag.setGunIndex(gunIndex);
         }
         return super.getItemPosition(object);
@@ -59,4 +59,7 @@ public class TabsPagerAdapter extends FragmentStatePagerAdapter {
         return tabNames[position];
     }
 
+    public int getGunIndex() {
+        return gunIndex;
+    }
 }

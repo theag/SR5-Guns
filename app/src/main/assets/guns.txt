@@ -1,3 +1,8 @@
+//String name, String type, int accuracy, int damage, String damageType, String damageSubtype, int ap, byte modes, int recoil, int ammoCount, String ammoContainer, byte mounts, int otherAccessoryCount
+//modes: SS SA BF FA
+//mounts: top barrel underbarrel
+Defiance EX Shocker#Taser#4#9#Stun#electrical#-5#1000#0#4#magazine#100#0
+Yamaha Pulsar#Taser#5#7#Stun#electrical#-5#0100#0#4#magazine#100#0
 Browning Ultra-Power#Heavy pistol#5#8#Physical#null#-1#0100#0#15#clip#110#0#1000#Laser sight#false
 Ares Alpha#Assault rifle#5#11#Physical#null#-2#0111#2#42#clip#111#1#0010#Grenade launcher#true#0001#Smart gun#false
 Ares S-III Super Squirt#Special weapon#3#0#Chemical#null#0#0100#0#20#clip#101#0

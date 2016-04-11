@@ -3,6 +3,7 @@ package com.sr5guns;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import com.sr5guns.items.Runner;
 import com.sr5guns.views.ClipView;
 
 
-public class GunFiringFragment extends GunFragment implements AdapterView.OnItemSelectedListener {
+public class GunFiringFragment extends GunFragment implements AdapterView.OnItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String ARG_GUN_INDEX = "gun index";
     private static final String[][] gunTypeSkills = {{"Taser", "Hold-out", "Light pistol", "Heavy pistol", "Machine pistol", "Submachine Gun", "Assault rifle", "Sniper rifle", "Shotgun", "Special weapon"},
             {"Pistols", "Pistols", "Pistols", "Pistols", "Automatics|Pistols", "Automatics", "Automatics", "Longarms", "Longarms", "Exotic Ranged Weapon"}};
@@ -30,6 +31,9 @@ public class GunFiringFragment extends GunFragment implements AdapterView.OnItem
     private Spinner clipSpinner;
     private Spinner modeSpinner;
     private OnFragmentInteractionListener mListener;
+    private int nextRecoilIncrese;
+    private int nextBulletUsage;
+    private SwipeRefreshLayout refresh;
 
     public GunFiringFragment() {
         gunIndex = -1;
@@ -81,15 +85,59 @@ public class GunFiringFragment extends GunFragment implements AdapterView.OnItem
                 otherClick(v);
             }
         });
+
+        TextView tv = (TextView)view.findViewById(R.id.text_wound_penalty);
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                woundPenaltyClick(v);
+            }
+        });
+
+        btn = (Button)view.findViewById(R.id.btn_fire);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fire();
+            }
+        });
+
+        refresh = (SwipeRefreshLayout)view.findViewById(R.id.swipeRefresh);
+        refresh.setOnRefreshListener(this);
+
         if(gunIndex >= 0) {
             updateView(view);
         }
         return view;
     }
 
+    private void fire() {
+        Gun gun = Arrays.getInstance().guns.get(gunIndex);
+        Clip clip = (Clip)clipSpinner.getSelectedItem();
+        Combat combat = Combat.get();
+
+        combat.currentRecoil += nextRecoilIncrese;
+        gun.setCurrent(clip);
+        clip.fire(nextBulletUsage);
+
+        ((ArrayAdapter<Clip>)clipSpinner.getAdapter()).notifyDataSetChanged();
+        TextView tv = (TextView)getView().findViewById(R.id.text_current_recoil);
+        tv.setText("" + combat.currentRecoil);
+
+        updateGrid(getView());
+    }
+
+    private void woundPenaltyClick(View view) {
+        Uri.Builder builder = new Uri.Builder();
+        builder.appendPath(MainActivity.DIALOG_WOUND_PENALTY);
+        if (mListener != null) {
+            mListener.onFragmentInteraction(builder.build());
+        }
+    }
+
     private void otherClick(View view) {
         Gun gun = Arrays.getInstance().guns.get(gunIndex);
-        Combat combat = Combat.getCombat(gun);
+        Combat combat = Combat.get();
         switch(view.getId()) {
             case R.id.switch_smart_gun:
                 combat.smartLinkOverLaser = ((Switch)view).isChecked();
@@ -101,6 +149,8 @@ public class GunFiringFragment extends GunFragment implements AdapterView.OnItem
                 break;
             case R.id.btn_reset_recoil:
                 combat.currentRecoil = 0;
+                TextView tv = (TextView)getView().findViewById(R.id.text_current_recoil);
+                tv.setText(""+combat.currentRecoil);
                 updateGrid(getView());
                 break;
         }
@@ -138,7 +188,7 @@ public class GunFiringFragment extends GunFragment implements AdapterView.OnItem
         clipArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         clipSpinner.setAdapter(clipArrayAdapter);
 
-        Combat combat = Combat.getCombat(gun);
+        Combat combat = Combat.get();
         Switch sw = (Switch)view.findViewById(R.id.switch_smart_gun);
         sw.setChecked(combat.smartLinkOverLaser);
         sw = (Switch)view.findViewById(R.id.switch_wireless);
@@ -162,10 +212,6 @@ public class GunFiringFragment extends GunFragment implements AdapterView.OnItem
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
        updateGrid(getView());
-        if(parent.getId() == R.id.spinner_clips) {
-            ClipView cv = (ClipView)getView().findViewById(R.id.clipView);
-            cv.setClip((Clip)clipSpinner.getSelectedItem());
-        }
     }
 
     @Override
@@ -176,35 +222,67 @@ public class GunFiringFragment extends GunFragment implements AdapterView.OnItem
     private void updateGrid(View view) {
         Gun gun = Arrays.getInstance().guns.get(gunIndex);
         Clip clip = gun.clips.get(clipSpinner.getSelectedItemPosition());
-        Combat combat = Combat.getCombat(gun);
+        Combat combat = Combat.get();
         Runner runner = Runner.getInstance();
+
+        view.findViewById(R.id.btn_fire).setEnabled(clip.getBulletCount() > 0);
 
         TextView tv = (TextView)view.findViewById(R.id.text_bullet_usage);
         int bulletUsage = 1;
+        int defMod = 0;
         switch((String)modeSpinner.getSelectedItem()) {
             case "Semi Auto Burst":
             case "Burst Fire":
                 bulletUsage += 2;
+                defMod = -2;
                 break;
             case "Long Burst":
             case "Full Auto (Simp)":
                 bulletUsage += 5;
+                defMod = -5;
                 break;
             case "Full Auto (Cmpx)":
                 bulletUsage += 9;
+                defMod = -9;
                 break;
             case "Surpressive Fire":
                 bulletUsage +=  19;
+                defMod = 1;
                 break;
         }
-        tv.setText(""+bulletUsage);
+        if(bulletUsage > clip.getBulletCount()) {
+            if(defMod < 0) {
+                defMod += bulletUsage - clip.getBulletCount();
+            } else {
+                defMod = 1 + bulletUsage - clip.getBulletCount();
+            }
+            bulletUsage = clip.getBulletCount();
+        }
+        tv.setText("" + bulletUsage);
+        nextBulletUsage = bulletUsage;
+
+        ClipView cv = (ClipView)view.findViewById(R.id.clipView);
+        cv.setClip(clip, bulletUsage);
+
+        tv = (TextView)view.findViewById(R.id.text_def_mod);
+        if(defMod <= 0) {
+            tv.setText(""+defMod);
+        } else {
+            String txt = "Duck or Cover";
+            if(defMod > 1) {
+                txt += "\nwidth " +(10 - (defMod-1)/2) +"m";
+            }
+            tv.setText(txt);
+        }
 
         tv = (TextView)view.findViewById(R.id.text_recoil_increase);
         int recoil = 1 + ClipView.ceil(runner.strength/3f) + gun.getRecoilInt() + gun.getAccessoryBonuses("recoil comp", combat.smartLinkOverLaser, combat.wireless, runner.smartLinkWithAug) - bulletUsage;
         if(recoil < 0) {
             tv.setText(""+(-recoil));
+            nextRecoilIncrese = -recoil;
         } else {
             tv.setText("0");
+            nextRecoilIncrese = 0;
         }
 
         tv = (TextView)view.findViewById(R.id.text_wound_penalty);
@@ -232,10 +310,13 @@ public class GunFiringFragment extends GunFragment implements AdapterView.OnItem
                 dp += runner.getExoticSkill(gun.getName());
                 break;
         }
-        dp += gun.getAccessoryBonuses("dice pool", combat.smartLinkOverLaser, combat.wireless, runner.smartLinkWithAug);
-        dp -= combat.woundPenalty;
-        if(recoil < 0) {
+        dp += gun.getAccessoryBonuses("dice pool", combat.smartLinkOverLaser, combat.wireless, runner.smartLinkWithAug) + combat.woundPenalty;
+        if(recoil < 0 && defMod <= 0) {
             dp += recoil;
+            dp -= combat.currentRecoil;
+        }
+        if(dp <= 0) {
+            dp = 1;
         }
         tv.setText(""+dp);
 
@@ -258,6 +339,12 @@ public class GunFiringFragment extends GunFragment implements AdapterView.OnItem
             damageType += "(" +clip.getDamageSubtype().charAt(0) +")";
         }
         tv.setText(damage +damageType);
+    }
+
+    @Override
+    public void onRefresh() {
+        updateView(getView());
+        refresh.setRefreshing(false);
     }
 
     /**

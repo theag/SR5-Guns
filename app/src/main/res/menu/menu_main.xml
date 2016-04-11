@@ -8,14 +8,21 @@
         app:showAsAction="ifRoom"/>
 
     <item
+        android:id="@+id/action_ammo"
+        android:title="@string/action_new"
+        android:icon="@drawable/ic_battery_full_24dp"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/action_new"
         android:title="@string/action_new"
         android:icon="@drawable/ic_add_circle_outline_24dp"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_ammo"
-        android:title="@string/action_new"
-        android:icon="@drawable/ic_battery_full_24dp"
+        android:id="@+id/action_delete"
+        android:title="@string/action_delete"
+        android:icon="@drawable/ic_delete_24dp"
         app:showAsAction="ifRoom"/>
+
 </menu>

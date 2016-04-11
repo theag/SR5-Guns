@@ -79,11 +79,7 @@ public class Gun {
     private Gun(Template template, int currentClip) {
         this.template = template;
         mountedAccessories = new GunAccessory[3];
-        System.arraycopy(template.mountedAccessories, 0, mountedAccessories, 0, 3);
         otherAccessories = new ArrayList<>();
-        for(GunAccessory accessory : template.otherAccessories) {
-            otherAccessories.add(accessory);
-        }
         clips = new ArrayList<>();
         this.currentClip = currentClip;
     }

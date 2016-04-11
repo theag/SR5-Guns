@@ -7,4 +7,5 @@
     <color name="bulletHead">#B87333</color>
     <color name="bulletBodyTrans">#80DAA520</color>
     <color name="bulletHeadTrans">#80B87333</color>
+    <color name="bulletFiring">#FFFF0000</color>
 </resources>

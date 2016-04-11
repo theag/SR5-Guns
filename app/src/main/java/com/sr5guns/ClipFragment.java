@@ -191,6 +191,7 @@ public class ClipFragment extends GunFragment implements AdapterView.OnItemSelec
                     Button btn = (Button)getView().findViewById(R.id.btn_delete);
                     btn.setEnabled(false);
                 }
+                ((ArrayAdapter<Clip>)clipSpinner.getAdapter()).notifyDataSetChanged();
                 break;
             case R.id.text_damage_mod:
                 if(clip.isDamageInteresting()) {

@@ -111,4 +111,8 @@ public class Clip {
     public String getDamageSubtype() {
         return ammo.getDamageSubtype();
     }
+
+    public void fire(int bulletUsage) {
+        bulletCount -= bulletUsage;
+    }
 }

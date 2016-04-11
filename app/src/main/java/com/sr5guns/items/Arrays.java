@@ -53,6 +53,9 @@ public class Arrays {
         gunTemplates.clear();
         BufferedReader inFile = new BufferedReader(new InputStreamReader(open));
         String line = inFile.readLine();
+        while(line.startsWith("//")) {
+            line = inFile.readLine();
+        }
         StringTokenizer tokens;
         Gun.Template template;
         int count;

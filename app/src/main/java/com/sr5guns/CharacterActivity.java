@@ -49,6 +49,12 @@ public class CharacterActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
+    }
+
     public void saveRunner(View view) {
         Runner runner = Runner.getInstance();
 
@@ -71,6 +77,7 @@ public class CharacterActivity extends AppCompatActivity {
             et = (EditText)tr.findViewById(R.id.edit_value);
             runner.getExoticSkill(i).value = Integer.parseInt(et.getText().toString());
         }
+        setResult(RESULT_OK);
         finish();
     }
 

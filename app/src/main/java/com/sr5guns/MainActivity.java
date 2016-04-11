@@ -27,8 +27,10 @@ import com.sr5guns.dialogs.ChangeAmmoDialog;
 import com.sr5guns.dialogs.NewGunDialog;
 import com.sr5guns.dialogs.ReplaceAccessoryDialog;
 import com.sr5guns.dialogs.TextPopupDialog;
+import com.sr5guns.dialogs.WoundPenaltyDialog;
 import com.sr5guns.items.Arrays;
 import com.sr5guns.items.Clip;
+import com.sr5guns.items.Combat;
 import com.sr5guns.items.Gun;
 import com.sr5guns.views.MountedAccessoriesView;
 
@@ -37,7 +39,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity implements GunFiringFragment.OnFragmentInteractionListener,
         GunDetailsFragment.OnFragmentInteractionListener, NewGunDialog.OnClickListener, AdapterView.OnItemSelectedListener,
         AddAccessoryDialog.OnClickListener, ReplaceAccessoryDialog.OnClickListener, ClipFragment.OnFragmentInteractionListener,
-        ChangeAmmoDialog.OnClickListener {
+        ChangeAmmoDialog.OnClickListener, WoundPenaltyDialog.OnClickListener {
 
     public static final String DIALOG_NEW_GUN_1 = "new gun dialog 1";
     public static final String DIALOG_NEW_GUN_2 = "new gun dialog 2";
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
     public static final String ARG_CLIP_INDEX = "clip index";
     public static final String DIALOG_FIRST_GUN_1 = "first gun dialog 1";
     public static final String DIALOG_FIRST_GUN_2 = "first gun dialog 2";
+    private static final int EDIT_RUNNER_REQUEST = 1;
+    public static final String DIALOG_WOUND_PENALTY = "wound penalty dialog";
 
     TabsPagerAdapter tabsPagerAdapter;
     ViewPager viewPager;
@@ -73,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
             e.printStackTrace(System.out);
         }
         gunArray.load(getFilesDir());
+        int gunIndex = Combat.load(getFilesDir());
 
         PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.pagerTabStrip);
         pagerTabStrip.setTabIndicatorColorResource(R.color.colorAccent);
@@ -102,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
             builder.create().show();
         } else {
             init();
+            gunSpinner.setSelection(gunIndex);
         }
 
     }
@@ -134,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
     protected void onDestroy() {
         super.onDestroy();
         Arrays.getInstance().save(getFilesDir());
+        Combat.save(getFilesDir(), tabsPagerAdapter.getGunIndex());
     }
 
 
@@ -158,10 +165,19 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
                 return true;
             case R.id.action_character:
                 intent = new Intent(this, CharacterActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, EDIT_RUNNER_REQUEST);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EDIT_RUNNER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                tabsPagerAdapter.setGunIndex(gunSpinner.getSelectedItemPosition());
+            }
         }
     }
 
@@ -238,6 +254,9 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
                 frag.setArguments(args);
                 frag.show(getSupportFragmentManager(), DIALOG_CHANGE_AMMO);
                 break;
+            case DIALOG_WOUND_PENALTY:
+                frag = new WoundPenaltyDialog();
+                frag.show(getSupportFragmentManager(), DIALOG_WOUND_PENALTY);
             default:
                 System.out.println(uri.getLastPathSegment());
                 break;
@@ -339,6 +358,11 @@ public class MainActivity extends AppCompatActivity implements GunFiringFragment
                 ArrayAdapter<Clip> adapter = (ArrayAdapter<Clip>)spinner.getAdapter();
                 adapter.notifyDataSetChanged();
                 break;
+            case DIALOG_WOUND_PENALTY:
+                Combat.get().woundPenalty = data.getInt(WoundPenaltyDialog.ARG_WOUND_PENALTY);
+                tabsPagerAdapter.setGunIndex(gunSpinner.getSelectedItemPosition());
+                break;
+
         }
     }
 
